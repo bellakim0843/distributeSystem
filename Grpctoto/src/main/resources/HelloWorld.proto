@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "grpc.example.helloworld";
+option java_outer_classname = "DemoHelloWorldServiceImpl";
+
+package extrahelloworld;
+
+
+
+service LogIn{
+
+	rpc InputInfo(LoginRequest) returns (LoginReply){}
+}
+
+message LoginRequest{
+
+	int32 id = 1;
+	string name = 2;
+
+}
+
+message LoginReply{
+
+	string message = 1;
+}
