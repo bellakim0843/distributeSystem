@@ -1,11 +1,26 @@
+<!-- This is the first file that would be generated as part of any Maven project
+ This file contains all the dependencies and the build related commands.
+ For our project, a similar sample-pom.xml is made available on the moodle page.
+ That has all the dependencies already written.
+ 
+ TO EXECUTE THIS FILE:
+ 	1. Right click on pom.xml -> Maven -> Update project
+ 	2. Right click on pom.xml -> Run as -> Maven Install
+ 	
+ After this you should see a build success message in the console (This may take some time depends on your network/computer).
+ 
+ Now, create your proto files inside src/main/resources
+-->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>grpcCa1</groupId>
-	<artifactId>grpcCa1</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>grpcCa1</name>
-	<description>grpcCa1</description>
-	<dependencies>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>grpc.examples.strings</groupId>
+  <!-- Name of the project -->
+  <artifactId>StringGRPCClient</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+    
+  <dependencies>
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
@@ -106,4 +121,5 @@
 		</plugins>
 	</build>
 
+  
 </project>

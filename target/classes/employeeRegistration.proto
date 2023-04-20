@@ -1,0 +1,66 @@
+// 1. To execute this file right click on the project -> Run as -> Maven Build
+// 2. The execution will generate the package (as per option java_package below line no. 11) inside src/main/java with generated files required for GRPC
+// 3. One need to create a server and client in package (as per option java_package below line no. 11)
+
+
+syntax = "proto3"; // Make sure to have proto3 for your proto files.
+
+// generate separate or multiple java file for each generated class.
+option java_multiple_files = true;
+// Package inside the src/main/java where generated classes will reside.
+option java_package = "grpc.examples.employeeRegistration";
+// Class name of the wrapper class which represent this file.
+option java_outer_classname = "EmployeeRegistrationServiceImpl";
+
+// package name to avoid name collisions
+package strings;
+
+// Interface exported by the server.
+service user{
+
+	rpc login(loginRequest) returns (loginResponse);
+
+	rpc register(stream employee)	returns (employeeList);
+
+	rpc logout(logoutResponse) returns (empty);
+
+}
+
+message loginRequest{
+	int32 empNo = 1;
+	string empName = 2;
+
+}
+
+message loginResponse{
+
+	string responseMessage = 1;
+	string confirm = 2;
+}
+
+message employee {
+  int32 empNo = 1;
+  string empName = 2;
+  int32 shift = 3;
+}
+
+
+message employeeList {
+ string val = 1;
+}
+
+message logoutResponse{
+		enum Enum {
+        Admin = 0;
+        Manager = 1;
+        Employee = 2;
+    }
+string confirmMessage = 1;
+    Enum detail = 2;
+
+}
+
+
+message empty{
+
+}
