@@ -30,38 +30,6 @@ public final class userGrpc {
   public static final String SERVICE_NAME = "strings.user";
 
   // Static method descriptors that strictly reflect the proto.
-  private static volatile io.grpc.MethodDescriptor<grpc.examples.securityDeviceCheck.loginRequest,
-      grpc.examples.securityDeviceCheck.loginResponse> getLoginMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "login",
-      requestType = grpc.examples.securityDeviceCheck.loginRequest.class,
-      responseType = grpc.examples.securityDeviceCheck.loginResponse.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<grpc.examples.securityDeviceCheck.loginRequest,
-      grpc.examples.securityDeviceCheck.loginResponse> getLoginMethod() {
-    io.grpc.MethodDescriptor<grpc.examples.securityDeviceCheck.loginRequest, grpc.examples.securityDeviceCheck.loginResponse> getLoginMethod;
-    if ((getLoginMethod = userGrpc.getLoginMethod) == null) {
-      synchronized (userGrpc.class) {
-        if ((getLoginMethod = userGrpc.getLoginMethod) == null) {
-          userGrpc.getLoginMethod = getLoginMethod = 
-              io.grpc.MethodDescriptor.<grpc.examples.securityDeviceCheck.loginRequest, grpc.examples.securityDeviceCheck.loginResponse>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(
-                  "strings.user", "login"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  grpc.examples.securityDeviceCheck.loginRequest.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  grpc.examples.securityDeviceCheck.loginResponse.getDefaultInstance()))
-                  .setSchemaDescriptor(new userMethodDescriptorSupplier("login"))
-                  .build();
-          }
-        }
-     }
-     return getLoginMethod;
-  }
-
   private static volatile io.grpc.MethodDescriptor<grpc.examples.securityDeviceCheck.deviceRequest,
       grpc.examples.securityDeviceCheck.deviceList> getDeviceCheckMethod;
 
@@ -92,38 +60,6 @@ public final class userGrpc {
         }
      }
      return getDeviceCheckMethod;
-  }
-
-  private static volatile io.grpc.MethodDescriptor<grpc.examples.securityDeviceCheck.empty,
-      grpc.examples.securityDeviceCheck.logoutResponse> getLogoutMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "logout",
-      requestType = grpc.examples.securityDeviceCheck.empty.class,
-      responseType = grpc.examples.securityDeviceCheck.logoutResponse.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<grpc.examples.securityDeviceCheck.empty,
-      grpc.examples.securityDeviceCheck.logoutResponse> getLogoutMethod() {
-    io.grpc.MethodDescriptor<grpc.examples.securityDeviceCheck.empty, grpc.examples.securityDeviceCheck.logoutResponse> getLogoutMethod;
-    if ((getLogoutMethod = userGrpc.getLogoutMethod) == null) {
-      synchronized (userGrpc.class) {
-        if ((getLogoutMethod = userGrpc.getLogoutMethod) == null) {
-          userGrpc.getLogoutMethod = getLogoutMethod = 
-              io.grpc.MethodDescriptor.<grpc.examples.securityDeviceCheck.empty, grpc.examples.securityDeviceCheck.logoutResponse>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(
-                  "strings.user", "logout"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  grpc.examples.securityDeviceCheck.empty.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  grpc.examples.securityDeviceCheck.logoutResponse.getDefaultInstance()))
-                  .setSchemaDescriptor(new userMethodDescriptorSupplier("logout"))
-                  .build();
-          }
-        }
-     }
-     return getLogoutMethod;
   }
 
   /**
@@ -158,34 +94,13 @@ public final class userGrpc {
 
     /**
      */
-    public void login(grpc.examples.securityDeviceCheck.loginRequest request,
-        io.grpc.stub.StreamObserver<grpc.examples.securityDeviceCheck.loginResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(getLoginMethod(), responseObserver);
-    }
-
-    /**
-     */
     public void deviceCheck(grpc.examples.securityDeviceCheck.deviceRequest request,
         io.grpc.stub.StreamObserver<grpc.examples.securityDeviceCheck.deviceList> responseObserver) {
       asyncUnimplementedUnaryCall(getDeviceCheckMethod(), responseObserver);
     }
 
-    /**
-     */
-    public void logout(grpc.examples.securityDeviceCheck.empty request,
-        io.grpc.stub.StreamObserver<grpc.examples.securityDeviceCheck.logoutResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(getLogoutMethod(), responseObserver);
-    }
-
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
-          .addMethod(
-            getLoginMethod(),
-            asyncUnaryCall(
-              new MethodHandlers<
-                grpc.examples.securityDeviceCheck.loginRequest,
-                grpc.examples.securityDeviceCheck.loginResponse>(
-                  this, METHODID_LOGIN)))
           .addMethod(
             getDeviceCheckMethod(),
             asyncServerStreamingCall(
@@ -193,13 +108,6 @@ public final class userGrpc {
                 grpc.examples.securityDeviceCheck.deviceRequest,
                 grpc.examples.securityDeviceCheck.deviceList>(
                   this, METHODID_DEVICE_CHECK)))
-          .addMethod(
-            getLogoutMethod(),
-            asyncUnaryCall(
-              new MethodHandlers<
-                grpc.examples.securityDeviceCheck.empty,
-                grpc.examples.securityDeviceCheck.logoutResponse>(
-                  this, METHODID_LOGOUT)))
           .build();
     }
   }
@@ -227,26 +135,10 @@ public final class userGrpc {
 
     /**
      */
-    public void login(grpc.examples.securityDeviceCheck.loginRequest request,
-        io.grpc.stub.StreamObserver<grpc.examples.securityDeviceCheck.loginResponse> responseObserver) {
-      asyncUnaryCall(
-          getChannel().newCall(getLoginMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     */
     public void deviceCheck(grpc.examples.securityDeviceCheck.deviceRequest request,
         io.grpc.stub.StreamObserver<grpc.examples.securityDeviceCheck.deviceList> responseObserver) {
       asyncServerStreamingCall(
           getChannel().newCall(getDeviceCheckMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     */
-    public void logout(grpc.examples.securityDeviceCheck.empty request,
-        io.grpc.stub.StreamObserver<grpc.examples.securityDeviceCheck.logoutResponse> responseObserver) {
-      asyncUnaryCall(
-          getChannel().newCall(getLogoutMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -273,24 +165,10 @@ public final class userGrpc {
 
     /**
      */
-    public grpc.examples.securityDeviceCheck.loginResponse login(grpc.examples.securityDeviceCheck.loginRequest request) {
-      return blockingUnaryCall(
-          getChannel(), getLoginMethod(), getCallOptions(), request);
-    }
-
-    /**
-     */
     public java.util.Iterator<grpc.examples.securityDeviceCheck.deviceList> deviceCheck(
         grpc.examples.securityDeviceCheck.deviceRequest request) {
       return blockingServerStreamingCall(
           getChannel(), getDeviceCheckMethod(), getCallOptions(), request);
-    }
-
-    /**
-     */
-    public grpc.examples.securityDeviceCheck.logoutResponse logout(grpc.examples.securityDeviceCheck.empty request) {
-      return blockingUnaryCall(
-          getChannel(), getLogoutMethod(), getCallOptions(), request);
     }
   }
 
@@ -314,27 +192,9 @@ public final class userGrpc {
         io.grpc.CallOptions callOptions) {
       return new userFutureStub(channel, callOptions);
     }
-
-    /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<grpc.examples.securityDeviceCheck.loginResponse> login(
-        grpc.examples.securityDeviceCheck.loginRequest request) {
-      return futureUnaryCall(
-          getChannel().newCall(getLoginMethod(), getCallOptions()), request);
-    }
-
-    /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<grpc.examples.securityDeviceCheck.logoutResponse> logout(
-        grpc.examples.securityDeviceCheck.empty request) {
-      return futureUnaryCall(
-          getChannel().newCall(getLogoutMethod(), getCallOptions()), request);
-    }
   }
 
-  private static final int METHODID_LOGIN = 0;
-  private static final int METHODID_DEVICE_CHECK = 1;
-  private static final int METHODID_LOGOUT = 2;
+  private static final int METHODID_DEVICE_CHECK = 0;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -353,17 +213,9 @@ public final class userGrpc {
     @java.lang.SuppressWarnings("unchecked")
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
-        case METHODID_LOGIN:
-          serviceImpl.login((grpc.examples.securityDeviceCheck.loginRequest) request,
-              (io.grpc.stub.StreamObserver<grpc.examples.securityDeviceCheck.loginResponse>) responseObserver);
-          break;
         case METHODID_DEVICE_CHECK:
           serviceImpl.deviceCheck((grpc.examples.securityDeviceCheck.deviceRequest) request,
               (io.grpc.stub.StreamObserver<grpc.examples.securityDeviceCheck.deviceList>) responseObserver);
-          break;
-        case METHODID_LOGOUT:
-          serviceImpl.logout((grpc.examples.securityDeviceCheck.empty) request,
-              (io.grpc.stub.StreamObserver<grpc.examples.securityDeviceCheck.logoutResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -426,9 +278,7 @@ public final class userGrpc {
         if (result == null) {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new userFileDescriptorSupplier())
-              .addMethod(getLoginMethod())
               .addMethod(getDeviceCheckMethod())
-              .addMethod(getLogoutMethod())
               .build();
         }
       }

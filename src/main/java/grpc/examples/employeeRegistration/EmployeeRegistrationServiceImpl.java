@@ -34,16 +34,6 @@ public final class EmployeeRegistrationServiceImpl {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_strings_employeeList_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_strings_logoutResponse_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_strings_logoutResponse_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_strings_empty_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_strings_empty_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -58,17 +48,12 @@ public final class EmployeeRegistrationServiceImpl {
       "\002 \001(\t\"9\n\rloginResponse\022\027\n\017responseMessag" +
       "e\030\001 \001(\t\022\017\n\007confirm\030\002 \001(\t\"9\n\010employee\022\r\n\005" +
       "empNo\030\001 \001(\005\022\017\n\007empName\030\002 \001(\t\022\r\n\005shift\030\003 " +
-      "\001(\005\"\033\n\014employeeList\022\013\n\003val\030\001 \001(\t\"\204\001\n\016log" +
-      "outResponse\022\026\n\016confirmMessage\030\001 \001(\t\022,\n\006d" +
-      "etail\030\002 \001(\0162\034.strings.logoutResponse.Enu" +
-      "m\",\n\004Enum\022\t\n\005Admin\020\000\022\013\n\007Manager\020\001\022\014\n\010Emp" +
-      "loyee\020\002\"\007\n\005empty2\251\001\n\004user\0226\n\005login\022\025.str" +
-      "ings.loginRequest\032\026.strings.loginRespons" +
-      "e\0226\n\010register\022\021.strings.employee\032\025.strin" +
-      "gs.employeeList(\001\0221\n\006logout\022\027.strings.lo" +
-      "goutResponse\032\016.strings.emptyBG\n\"grpc.exa" +
-      "mples.employeeRegistrationB\037EmployeeRegi" +
-      "strationServiceImplP\001b\006proto3"
+      "\001(\005\"\033\n\014employeeList\022\013\n\003val\030\001 \001(\t2v\n\004user" +
+      "\0226\n\005login\022\025.strings.loginRequest\032\026.strin" +
+      "gs.loginResponse\0226\n\010register\022\021.strings.e" +
+      "mployee\032\025.strings.employeeList(\001BG\n\"grpc" +
+      ".examples.employeeRegistrationB\037Employee" +
+      "RegistrationServiceImplP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -106,18 +91,6 @@ public final class EmployeeRegistrationServiceImpl {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_strings_employeeList_descriptor,
         new java.lang.String[] { "Val", });
-    internal_static_strings_logoutResponse_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_strings_logoutResponse_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_strings_logoutResponse_descriptor,
-        new java.lang.String[] { "ConfirmMessage", "Detail", });
-    internal_static_strings_empty_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_strings_empty_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_strings_empty_descriptor,
-        new java.lang.String[] { });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

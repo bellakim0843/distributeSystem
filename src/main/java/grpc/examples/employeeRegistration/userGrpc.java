@@ -94,38 +94,6 @@ public final class userGrpc {
      return getRegisterMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<grpc.examples.employeeRegistration.logoutResponse,
-      grpc.examples.employeeRegistration.empty> getLogoutMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "logout",
-      requestType = grpc.examples.employeeRegistration.logoutResponse.class,
-      responseType = grpc.examples.employeeRegistration.empty.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<grpc.examples.employeeRegistration.logoutResponse,
-      grpc.examples.employeeRegistration.empty> getLogoutMethod() {
-    io.grpc.MethodDescriptor<grpc.examples.employeeRegistration.logoutResponse, grpc.examples.employeeRegistration.empty> getLogoutMethod;
-    if ((getLogoutMethod = userGrpc.getLogoutMethod) == null) {
-      synchronized (userGrpc.class) {
-        if ((getLogoutMethod = userGrpc.getLogoutMethod) == null) {
-          userGrpc.getLogoutMethod = getLogoutMethod = 
-              io.grpc.MethodDescriptor.<grpc.examples.employeeRegistration.logoutResponse, grpc.examples.employeeRegistration.empty>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(
-                  "strings.user", "logout"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  grpc.examples.employeeRegistration.logoutResponse.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  grpc.examples.employeeRegistration.empty.getDefaultInstance()))
-                  .setSchemaDescriptor(new userMethodDescriptorSupplier("logout"))
-                  .build();
-          }
-        }
-     }
-     return getLogoutMethod;
-  }
-
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -170,13 +138,6 @@ public final class userGrpc {
       return asyncUnimplementedStreamingCall(getRegisterMethod(), responseObserver);
     }
 
-    /**
-     */
-    public void logout(grpc.examples.employeeRegistration.logoutResponse request,
-        io.grpc.stub.StreamObserver<grpc.examples.employeeRegistration.empty> responseObserver) {
-      asyncUnimplementedUnaryCall(getLogoutMethod(), responseObserver);
-    }
-
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -193,13 +154,6 @@ public final class userGrpc {
                 grpc.examples.employeeRegistration.employee,
                 grpc.examples.employeeRegistration.employeeList>(
                   this, METHODID_REGISTER)))
-          .addMethod(
-            getLogoutMethod(),
-            asyncUnaryCall(
-              new MethodHandlers<
-                grpc.examples.employeeRegistration.logoutResponse,
-                grpc.examples.employeeRegistration.empty>(
-                  this, METHODID_LOGOUT)))
           .build();
     }
   }
@@ -240,14 +194,6 @@ public final class userGrpc {
       return asyncClientStreamingCall(
           getChannel().newCall(getRegisterMethod(), getCallOptions()), responseObserver);
     }
-
-    /**
-     */
-    public void logout(grpc.examples.employeeRegistration.logoutResponse request,
-        io.grpc.stub.StreamObserver<grpc.examples.employeeRegistration.empty> responseObserver) {
-      asyncUnaryCall(
-          getChannel().newCall(getLogoutMethod(), getCallOptions()), request, responseObserver);
-    }
   }
 
   /**
@@ -276,13 +222,6 @@ public final class userGrpc {
     public grpc.examples.employeeRegistration.loginResponse login(grpc.examples.employeeRegistration.loginRequest request) {
       return blockingUnaryCall(
           getChannel(), getLoginMethod(), getCallOptions(), request);
-    }
-
-    /**
-     */
-    public grpc.examples.employeeRegistration.empty logout(grpc.examples.employeeRegistration.logoutResponse request) {
-      return blockingUnaryCall(
-          getChannel(), getLogoutMethod(), getCallOptions(), request);
     }
   }
 
@@ -314,19 +253,10 @@ public final class userGrpc {
       return futureUnaryCall(
           getChannel().newCall(getLoginMethod(), getCallOptions()), request);
     }
-
-    /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<grpc.examples.employeeRegistration.empty> logout(
-        grpc.examples.employeeRegistration.logoutResponse request) {
-      return futureUnaryCall(
-          getChannel().newCall(getLogoutMethod(), getCallOptions()), request);
-    }
   }
 
   private static final int METHODID_LOGIN = 0;
-  private static final int METHODID_LOGOUT = 1;
-  private static final int METHODID_REGISTER = 2;
+  private static final int METHODID_REGISTER = 1;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -348,10 +278,6 @@ public final class userGrpc {
         case METHODID_LOGIN:
           serviceImpl.login((grpc.examples.employeeRegistration.loginRequest) request,
               (io.grpc.stub.StreamObserver<grpc.examples.employeeRegistration.loginResponse>) responseObserver);
-          break;
-        case METHODID_LOGOUT:
-          serviceImpl.logout((grpc.examples.employeeRegistration.logoutResponse) request,
-              (io.grpc.stub.StreamObserver<grpc.examples.employeeRegistration.empty>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -419,7 +345,6 @@ public final class userGrpc {
               .setSchemaDescriptor(new userFileDescriptorSupplier())
               .addMethod(getLoginMethod())
               .addMethod(getRegisterMethod())
-              .addMethod(getLogoutMethod())
               .build();
         }
       }

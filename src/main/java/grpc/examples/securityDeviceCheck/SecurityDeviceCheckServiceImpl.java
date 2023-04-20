@@ -15,16 +15,6 @@ public final class SecurityDeviceCheckServiceImpl {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_strings_loginRequest_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_strings_loginRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_strings_loginResponse_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_strings_loginResponse_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_strings_deviceRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -34,16 +24,6 @@ public final class SecurityDeviceCheckServiceImpl {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_strings_deviceList_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_strings_empty_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_strings_empty_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_strings_logoutResponse_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_strings_logoutResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -53,19 +33,13 @@ public final class SecurityDeviceCheckServiceImpl {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\031securityDeviceCheck.proto\022\007strings\".\n\014" +
-      "loginRequest\022\r\n\005empNo\030\001 \001(\005\022\017\n\007empName\030\002" +
-      " \001(\t\"9\n\rloginResponse\022\027\n\017responseMessage" +
-      "\030\001 \001(\t\022\017\n\007confirm\030\002 \001(\t\" \n\rdeviceRequest" +
-      "\022\017\n\007request\030\001 \001(\t\"\031\n\ndeviceList\022\013\n\003val\030\001" +
-      " \001(\t\"\007\n\005empty\"(\n\016logoutResponse\022\026\n\016confi" +
-      "rmMessage\030\001 \001(\t2\257\001\n\004user\0226\n\005login\022\025.stri" +
-      "ngs.loginRequest\032\026.strings.loginResponse" +
-      "\022<\n\013deviceCheck\022\026.strings.deviceRequest\032" +
-      "\023.strings.deviceList0\001\0221\n\006logout\022\016.strin" +
-      "gs.empty\032\027.strings.logoutResponseBE\n!grp" +
-      "c.examples.securityDeviceCheckB\036Security" +
-      "DeviceCheckServiceImplP\001b\006proto3"
+      "\n\031securityDeviceCheck.proto\022\007strings\"!\n\r" +
+      "deviceRequest\022\020\n\010massData\030\001 \001(\t\"\031\n\ndevic" +
+      "eList\022\013\n\003val\030\001 \001(\t2D\n\004user\022<\n\013deviceChec" +
+      "k\022\026.strings.deviceRequest\032\023.strings.devi" +
+      "ceList0\001BE\n!grpc.examples.securityDevice" +
+      "CheckB\036SecurityDeviceCheckServiceImplP\001b" +
+      "\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -79,42 +53,18 @@ public final class SecurityDeviceCheckServiceImpl {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_strings_loginRequest_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_strings_loginRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_strings_loginRequest_descriptor,
-        new java.lang.String[] { "EmpNo", "EmpName", });
-    internal_static_strings_loginResponse_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_strings_loginResponse_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_strings_loginResponse_descriptor,
-        new java.lang.String[] { "ResponseMessage", "Confirm", });
     internal_static_strings_deviceRequest_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(0);
     internal_static_strings_deviceRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_strings_deviceRequest_descriptor,
-        new java.lang.String[] { "Request", });
+        new java.lang.String[] { "MassData", });
     internal_static_strings_deviceList_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(1);
     internal_static_strings_deviceList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_strings_deviceList_descriptor,
         new java.lang.String[] { "Val", });
-    internal_static_strings_empty_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_strings_empty_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_strings_empty_descriptor,
-        new java.lang.String[] { });
-    internal_static_strings_logoutResponse_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_strings_logoutResponse_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_strings_logoutResponse_descriptor,
-        new java.lang.String[] { "ConfirmMessage", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

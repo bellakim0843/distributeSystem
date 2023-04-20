@@ -8,12 +8,12 @@ public interface deviceRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string request = 1;</code>
+   * <code>string massData = 1;</code>
    */
-  java.lang.String getRequest();
+  java.lang.String getMassData();
   /**
-   * <code>string request = 1;</code>
+   * <code>string massData = 1;</code>
    */
   com.google.protobuf.ByteString
-      getRequestBytes();
+      getMassDataBytes();
 }

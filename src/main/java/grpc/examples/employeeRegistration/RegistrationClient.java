@@ -1,13 +1,20 @@
 package grpc.examples.employeeRegistration;
 
+import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.net.InetAddress;
 //required java packages for the program. Depends on your logic.
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,346 +35,223 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
+
+import grpc.examples.employeeRegistration.userGrpc.userBlockingStub;
 //This is to include rpc method enum message
-import grpc.examples.employeeRegistration.empty;
-import grpc.examples.employeeRegistration.userGrpc.userStub;
-
-
-
+import grpc.examples.employeeRegistration.userGrpcClient.userStub;
+import grpc.examples.employeeRegistration.userGrpc.userBlockingStub;
 
 //Client need not to extend any other class (GRPC related code) here 
 public class RegistrationClient {
-	// First we create a logger to show client side logs in the console. logger instance will be used to log different events at the client console.
+	// First we create a logger to show client side logs in the console. logger
+	// instance will be used to log different events at the client console.
 	// This is optional. Could be used if needed.
-	private static  Logger logger = Logger.getLogger(RegistrationClient.class.getName());
+	private static Logger logger = Logger.getLogger(RegistrationClient.class.getName());
 
 	// Creating stubs for establishing the connection with server.
 	// Blocking stub
-	private static userGrpc.userBlockingStub blockingStub;
+	// private static userGrpcClient.userBlockingStub blockingStub;
 	// Asynch stub
 	private static userStub asyncStub;
-	
+	static String host = "_grpc._tcp.local.";//
+	static String myhost = "localhost";
+	static int port = 50050; // 여기 포트 그대로 쓸 것 local host + port 넘버 입력. 나머지는 놔둘
+	static String resolvedIP;
+
 	// The main method will have the logic for client.
 	public static void main(String[] args) throws Exception {
-	// First a channel is being created to the server from client. Here, we provide the server name (localhost) and port (50055).
-		// As it is a local demo of GRPC, we can have non-secured channel (usePlaintext).
-		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50037).usePlaintext().build();
+		// First a channel is being created to the server from client. Here, we provide
+		// the server name (localhost) and port (50055).
+		// As it is a local demo of GRPC, we can have non-secured channel
+		// (usePlaintext).
 
-		//stubs -- generate from proto
-
-		asyncStub = userGrpc.newStub(channel);
-		blockingStub = userGrpc.newBlockingStub(channel);
-		// Unary RPC call
-		  register();
-
-
-		 // logout(); 	//passing an empty message - no server reply, error message
-
-		// Closing the channel once message has been passed.		
-		channel.shutdown();
+		register();
 
 	}
 
-
-	//unary rpc
+	// unary rpc
 	public static void register() {
-		
 
-		
-		  login();
-		
+//
+//		// First creating a request message. Here, the message contains a string in
+//		// setVal
+////		loginRequest req = loginRequest.newBuilder().setEmpNo(19921019).setEmpName("Nakyung Kim").build();
+////		String information = "Welcome! "+req.getEmpName()+", EmpNo: "+req.getEmpNo();
+//		// Calling a remote RPC method using blocking stub defined in main method. req
+//		// is the message we want to pass.
+//		// loginResponse response = loginResponse.newBuilder().setConfirm("Login
+//		// Completed! EmpNo: "+ req.getEmpNo()).setResponseMessage(" Welcome!
+//		// "+req.getEmpName()).build();
+//
+//		// response contains the output from the server side. Here, we are printing the
+//		// value contained by response.
+//		// System.out.println(information);
+//
+//		// Handling the stream for client using onNext (logic for handling each message
+//		// in stream), onError, onCompleted (logic will be executed after the completion
+//		// of stream)
+		StreamObserver<employeeList> responseObserver = new StreamObserver<employeeList>() {
 
-		// First creating a request message. Here, the message contains a string in setVal
-//		loginRequest req = loginRequest.newBuilder().setEmpNo(19921019).setEmpName("Nakyung Kim").build();
-//		String information = "Welcome! "+req.getEmpName()+", EmpNo: "+req.getEmpNo();
-		//  Calling a remote RPC method using blocking stub defined in main method. req is the message we want to pass.
-		//loginResponse response = loginResponse.newBuilder().setConfirm("Login Completed! EmpNo: "+ req.getEmpNo()).setResponseMessage(" Welcome! "+req.getEmpName()).build();
+			@Override
+			public void onNext(employeeList value) {
+				System.out.println("Today's Work Shift " + value.getVal());
+			}
 
-		//response contains the output from the server side. Here, we are printing the value contained by response. 
-	//	System.out.println(information);
-		  
-			// Handling the stream for client using onNext (logic for handling each message in stream), onError, onCompleted (logic will be executed after the completion of stream)
-			StreamObserver<employeeList> responseObserver = new StreamObserver<employeeList>() {
-				
-				
+			@Override
+			public void onError(Throwable t) {
+				// TODO Auto-generated method stub
 
-				@Override
-				public void onNext(employeeList value) {
-					System.out.println("Today's Work Shift " + value.getVal());
-				}
+			}
 
-				@Override
-				public void onError(Throwable t) {
-					// TODO Auto-generated method stub
+			@Override
+			public void onCompleted() {
+				System.out.println("Workshift Registration is totally completed!");
 
-				}
+			}
 
-				@Override
-				public void onCompleted() {
-					System.out.println("completed ");
+		};
 
-				}
+		// Here, we are calling the Remote length method. Using onNext, client sends a
+		// stream of messages.
+		StreamObserver<employee> requestObserver = asyncStub.register(responseObserver);
 
-			};
-
-			// Here, we are calling the Remote length method. Using onNext, client sends a stream of messages.
-			StreamObserver<employee> requestObserver = asyncStub.register(responseObserver);
-
-						try {
-							/*GUI*/
-								System.out.println("Input the data!");
-								
-								
-								
-								requestObserver.onNext(employee.newBuilder().setEmpNo(19921019).setEmpName("Ann").setShift(1).build());
-								requestObserver.onNext(employee.newBuilder().setEmpNo(19999999).setEmpName("Paul").setShift(2).build());
-								requestObserver.onNext(employee.newBuilder().setEmpNo(20021010).setEmpName("Maria").setShift(3).build());
-
-
-							System.out.println("SENDING MESSAGES");
-
-							// Mark the end of requests
-							requestObserver.onCompleted();
-
-
-							// Sleep for a bit before sending the next one.
-							Thread.sleep(new Random().nextInt(1000) + 500);
-
-
-						} catch (RuntimeException e) {
-							e.printStackTrace();
-						} catch (InterruptedException e) {			
-							e.printStackTrace();
-						}
-
-		}
-	
-
-	//unary rpc
-	public static void logout() {
-		// First creating a request message. Here, the message contains emply message as defined in proto enum
-		logoutResponse req = logoutResponse.newBuilder().setConfirmMessage("Log-Out Completed!").build();
-		
 		try {
-			// Calling a remote RPC method using blocking stub defined in main method. req is the message we want to pass.
-			empty response = blockingStub.logout(req);
-			//response contains the output from the server side. Here, we are printing the value contained by response.
-			System.out.println("Log-Out Completed! "+response.toString());
+			/* GUI */
 
-		}catch(StatusRuntimeException ex) {
-			// Print if any error/exception is generated.
-			System.out.println( ex.getMessage());
-			//ex.printStackTrace();
+			JTextField id = new JTextField();
+
+			JTextField name = new JTextField();
+
+			Object[] message = { "Employee ID:", id, "Employee Name:", name };
+
+			int option = JOptionPane.showConfirmDialog(null, message, "Login", JOptionPane.OK_CANCEL_OPTION);
+
+			if (option == JOptionPane.OK_OPTION) {
+				String idText = (id.getText());
+				System.out.println(idText);
+				String nameText = name.getText();
+
+				System.out.println(nameText);
+
+				loginRequest loginrequeset = loginRequest.newBuilder().setEmpNo(Integer.parseInt(idText))
+						.setEmpName(nameText).build();
+				loginResponse reponse = loginResponse.newBuilder()
+						.setConfirm("Login Completed! EmpNo: " + loginrequeset.getEmpNo())
+						.setResponseMessage(" Welcome! " + loginrequeset.getEmpName()).build();
+				JOptionPane.showConfirmDialog(null, reponse.getResponseMessage());
+
+				JFrame frame = new JFrame();
+
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.setSize(500, 350);
+				frame.setResizable(false);
+
+				JPanel loginBar = new JPanel();
+				loginBar.setBackground(Color.red);
+				loginBar.setPreferredSize(new Dimension(500, 30));
+
+				JLabel loginLabel = new JLabel();
+				loginLabel.setText("Welcome! ID: " + idText + " Name: " + nameText);
+				loginBar.add(loginLabel);
+				loginLabel.setFont(new Font("Verdana", Font.BOLD, 14));
+				frame.add(loginBar, BorderLayout.NORTH);
+
+				JPanel namePanel1 = new JPanel();
+				GridBagLayout layout = new GridBagLayout();
+				namePanel1.setLayout(layout);
+				namePanel1.setBackground(Color.CYAN);
+				namePanel1.setPreferredSize(new Dimension(500, 80));
+				GridBagConstraints gbc = new GridBagConstraints();
+				gbc.insets = new Insets(5, 5, 5, 5);
+
+				JPanel namePanel2 = new JPanel();
+				namePanel2.setPreferredSize(new Dimension(500, 200));
+
+				namePanel2.setBackground(Color.magenta);
+				frame.add(namePanel2, BorderLayout.SOUTH);
+
+				JButton registrationButton = new JButton("Check Work-Shift");
+				JButton logoutButton = new JButton("Close");
+
+				gbc.fill = GridBagConstraints.HORIZONTAL;
+				gbc.gridx = 0;
+				gbc.gridy = 0;
+				namePanel1.add(registrationButton, gbc);
+
+				gbc.gridx = 1;
+				gbc.gridy = 0;
+				namePanel1.add(logoutButton, gbc);
+
+				JTextArea list = new JTextArea("====Today's Workshift List===\n");
+				list.setPreferredSize(new Dimension(400, 500));
+				list.setLineWrap(true);
+				list.setWrapStyleWord(true);
+
+				JScrollPane scrollPane = new JScrollPane(list);
+
+				scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+				scrollPane.setEnabled(true);
+				scrollPane.setPreferredSize(new Dimension(400, 150));
+
+				frame.getContentPane().add(scrollPane);
+
+				namePanel2.add(scrollPane);
+
+				StringBuilder total = new StringBuilder();
+				total.append("====Today's Workshift List===\n");
+
+				int number = Integer.parseInt(JOptionPane.showInputDialog("How many Shift will you register?"));
+
+				for (int i = 0; i < number; i++) {
+
+					int a = Integer.parseInt(JOptionPane.showInputDialog("Input employee's ID"));
+					String b = JOptionPane.showInputDialog("Input employee's Name");
+					int c = Integer.parseInt(JOptionPane.showInputDialog("Input employee'shift "));
+
+					total.append("\n============");
+					total.append("\n ID: " + a + "\n Name: " + b + "\n Shift: " + c);
+
+					requestObserver.onNext(employee.newBuilder().setEmpNo(a).setEmpName(b).setShift(c).build());
+
+				}
+
+				registrationButton.addActionListener(e -> {
+
+					list.setText(total.toString());
+
+				});
+
+				logoutButton.addActionListener(e -> {
+
+					frame.dispose();
+				});
+
+				frame.add(namePanel1);
+
+				frame.setVisible(true);
+
+			}
+
+			System.out.println("Registration is finished successfully!");
+
+			// Mark the end of requests
+			requestObserver.onCompleted();
+
+			// Sleep for a bit before sending the next one.
+			Thread.sleep(new Random().nextInt(1000) + 500);
+
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-
 
 	}
-	
-	
 
 	public static void login() {
-		
-//		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50016).usePlaintext().build();
-//
-//		//stubs -- generate from proto
-//
-//		asyncStub = userGrpc.newStub(channel);
-//		blockingStub = userGrpc.newBlockingStub(channel);
-		
-		
-		
-//    		
-//		JTextField id = new JTextField();
-//
-//
-//		JTextField name = new JPasswordField();
-//
-//		Object[] message = {
-//		    "Employee ID:", id,
-//		    "Name:", name
-//		};
-		
 
-	//	int option = JOptionPane.showConfirmDialog(null, message, "Login", JOptionPane.OK_CANCEL_OPTION);
+		register();
 
-	//	if(option == JOptionPane.OK_OPTION)
-		{
-//			String idText = (id.getText());
-//			System.out.println(idText);
-//			String nameText = name.getText();
-//			System.out.println(nameText);
-			
-			String idText = "19921019";
-			String nameText = "Kim";
-			
-//			loginRequest loginrequeset = loginRequest.newBuilder().setEmpNo(Integer.parseInt(idText)).setEmpName(name.getText()).build();
-			loginRequest loginrequeset = loginRequest.newBuilder().setEmpNo(Integer.parseInt(idText)).setEmpName(nameText).build();
-			loginResponse reponse = loginResponse.newBuilder().setConfirm("Login Completed! EmpNo: "+ loginrequeset.getEmpNo()).setResponseMessage(" Welcome! "+loginrequeset.getEmpName()).build();
-			//JOptionPane.showConfirmDialog(null, reponse.getResponseMessage());
-			
-			JFrame frame = new JFrame();
-			
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setSize(500,500);
-			frame.setVisible(true);
-			frame.setResizable(false);
-			
-			JPanel loginBar = new JPanel();
-			frame.add(loginBar);
-			loginBar.setBounds(0, 0, 500, 40);
+	}
 
-			JPanel namePanel1 = new JPanel();
-			namePanel1.setBounds(0, 40, 170, 150);
-			namePanel1.setBackground(Color.CYAN);
-			frame.add(namePanel1);
-			
-			JPanel namePanel2 = new JPanel();
-			namePanel2.setBounds(170, 40, 170, 150);
-			namePanel2.setBackground(Color.red);
-			frame.add(namePanel2);
-			
-			JPanel namePanel3 = new JPanel();
-			namePanel3.setBounds(340, 40, 170, 150);
-			namePanel3.setBackground(Color.orange);
-			frame.add(namePanel3);
-			
-			JPanel namePanel4 = new JPanel();
-			namePanel4.setBounds(0, 190, 500, 50);
-			namePanel4.setBackground(Color.magenta);
-			frame.add(namePanel4);
-			
-			JPanel namePanel5 = new JPanel();
-			namePanel5.setBounds(0, 240, 500, 150);
-			namePanel5.setBackground(Color.green);
-			frame.add(namePanel5);
-			
-
-			
-			
-			JLabel label = new JLabel();
-
-			frame.add(label);
-			label.setText("Welcome! EmpNo: "+idText+" Name: " + nameText);
-			label.setOpaque(true);
-			label.setBounds(10,10,500,20);
-			label.setForeground(Color.black);
-			label.setFont(new Font("Verdana", Font.BOLD,14));
-			loginBar.add(label);
-			
-			
-			JLabel labelEmpNo = new JLabel();
-			
-			labelEmpNo.setText("Employee Number");
-			labelEmpNo.setBounds(0, 0, 0, 0);
-			namePanel1.add(labelEmpNo);
-			
-			JLabel labelEmpName = new JLabel();
-			
-			labelEmpName.setText("Employee Name");
-			labelEmpName.setBounds(0, 0, 0, 0);
-			namePanel2.add(labelEmpName);
-			
-			JLabel labelShift  = new JLabel();
-			
-			labelShift.setText("Shift");
-			labelShift.setBounds(0, 0, 0, 0);
-			namePanel3.add(labelShift);
-			
-			JTextField empNoInput = new JTextField();
-			namePanel1.add(empNoInput);
-			empNoInput.setSize(100,50);
-			empNoInput.setBounds(0, 35, 170, 50);
-
-			
-			JTextField empNameInput = new JTextField();
-			empNameInput.setBounds(0, 35, 170, 50);
-			namePanel2.add(empNameInput);
-			
-			JTextField shiftInput = new JTextField();
-			shiftInput.setBounds(0, 35, 170, 50);
-			namePanel3.add(shiftInput);
-				
-			JButton registrationButton = new JButton();
-			registrationButton.setLocation(200, 0);
-			registrationButton.setSize(100,50);
-			registrationButton.setText("Registration");
-			registrationButton.setFocusable(true);
-			namePanel4.add(registrationButton);
-			
-			StringBuilder sb = new StringBuilder();
-	
-			JTextArea registrationArea = new JTextArea();
-
-			namePanel5.add(registrationArea);
-			registrationArea.setEnabled(false);
-
-			
-			registrationButton.addActionListener(e -> {
-				
-			
-				sb.append("Employee Number: "+ empNoInput.getText()+" Employee Name: "+empNameInput.getText()+" Shift: "+shiftInput.getText());
-				
-				System.out.println(sb.toString());
-				registrationArea.setText(sb.toString());
-				
-				empNoInput.setText("");
-				empNameInput.setText("");
-				shiftInput.setText("");
-				
-				
-			});
-			
-			
-
-
-
-
-			
-			//BoxLayout bl = new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS);
-			
-			//frame.getContentPane().setLayout(bl);
-			
-
-			
-
-
-			
-//			
-//			JTextField empInput = new JTextField();
-//			empInput.setSize(200, 50);
-//			namePanel1.add(empInput);
-			
-//			
-//			JLabel empNo = new JLabel();
-//			
-//			
-//			button.addActionListener(e -> {
-//				
-//				//frame.dispose();
-//			
-//				empNo.setText(empNoInput.getText());
-//				namePanel4.add(empNo);
-//
-//				
-//			});
-		}
-
-
-
-	/*Service*/
-		
-	
-		
-		
-	
-		
-
-		
-
-	
 }
-}
-
-
-
-
