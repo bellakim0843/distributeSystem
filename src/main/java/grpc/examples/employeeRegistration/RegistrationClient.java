@@ -18,6 +18,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceEvent;
+import javax.jmdns.ServiceInfo;
+import javax.jmdns.ServiceListener;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -65,13 +69,17 @@ public class RegistrationClient {
 		// As it is a local demo of GRPC, we can have non-secured channel
 		// (usePlaintext).
 
+		// testClientJMDNS();
 		register();
+
+		// passing an empty message - no server reply, error message
 
 	}
 
 	// unary rpc
 	public static void register() {
 
+		clientJMDNS();
 //
 //		// First creating a request message. Here, the message contains a string in
 //		// setVal
@@ -254,4 +262,73 @@ public class RegistrationClient {
 
 	}
 
+	private static class SampleListener implements ServiceListener {
+		public void serviceAdded(ServiceEvent event) {
+			System.out.println("Service added: " + event.getInfo());
+		}
+
+		public void serviceRemoved(ServiceEvent event) {
+			System.out.println("Service removed: " + event.getInfo());
+		}
+
+		@SuppressWarnings("deprecation")
+		public void serviceResolved(ServiceEvent event) {
+			System.out.println("Service resolved: " + event.getInfo());
+
+			ServiceInfo info = event.getInfo();
+			port = info.getPort();
+			resolvedIP = info.getHostAddress();
+			System.out.println("IP Resolved - " + resolvedIP + ":" + port);
+		}
+	}
+
+	public static void clientJMDNS() {
+
+		try {
+			// Create a JmDNS instance
+			JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
+			System.out.println("Service Registration..");
+
+			// Add a service listener
+			jmdns.addServiceListener(host, new SampleListener());
+
+			System.out.println("Service Registration..");
+
+			// Wait a bit
+			Thread.sleep(20000);
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50050).usePlaintext().build();
+
+		// stubs -- generate from proto
+
+		asyncStub = userGrpcClient.newStub(channel);
+		userBlockingStub blockingStubNew = userGrpc.newBlockingStub(channel);
+		// Unary RPC call
+
+		try {
+
+			loginRequest request = loginRequest.newBuilder().setEmpName("Nakyung Kim").setEmpNo(19921019).build();
+
+			loginResponse reply = blockingStubNew.login(request);
+			// employeeList.newBuilder().setVal(request.getEmpName()).build();
+			System.out.println("Message sent by the server " + reply.getConfirm());
+		} catch (StatusRuntimeException e) {
+			e.getStatus();
+		} finally {
+			try {
+				channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		// Closing the channel once message has been passed.
+		channel.shutdown();
+
+	}
 }

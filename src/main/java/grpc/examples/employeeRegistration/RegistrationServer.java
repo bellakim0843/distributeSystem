@@ -6,6 +6,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceInfo;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -39,6 +41,7 @@ public class RegistrationServer extends userImplBase {
 
 		// This is the port number where server will be listening to clients. Refer -
 		// https://en.wikipedia.org/wiki/Port_(computer_networking)
+		testJMDNS();
 
 		// Here, we create a server on the port defined in in variable "port" and attach
 		// a service "stringserver" (instance of the class) defined above.
@@ -128,6 +131,47 @@ public class RegistrationServer extends userImplBase {
 		};
 	}
 
+	@Override
+	public void login(loginRequest request, StreamObserver<loginResponse> responseObserver) {
+		// TODO Auto-generated method stub
+		System.out.println("Work-shift registration program is opened Successfully!");
 
+		// Logic Code
+		String myTest = "Welcome! " + request.getEmpName() + " Empno: " + request.getEmpNo();
+
+		// Logic
+
+		loginResponse reply = loginResponse.newBuilder().setConfirm(myTest).build();
+
+		responseObserver.onNext(reply);
+		responseObserver.onCompleted();
+
+	}
+
+	public static void testJMDNS() {
+		try {
+			// Create a JmDNS instance
+			JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
+
+			// Register a service
+			ServiceInfo serviceInfo = ServiceInfo.create("_grpc._tcp.local.", "employeeRegistration", port,
+					"Employee registration service");
+			System.out.println("Service Registration Server is being started!");
+			jmdns.registerService(serviceInfo);
+			System.out.println("This Service is being processed!");
+			// Wait a bit
+			Thread.sleep(20000);
+
+			// Unregister all services
+			// jmdns.unregisterAllServices();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+	}
 
 }
