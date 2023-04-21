@@ -21,8 +21,9 @@ service user{
 
 	rpc deviceCheck(deviceRequest) returns (stream deviceList);
 
-}
+	rpc printOut(printRequest) returns (printResponse);
 
+}
 
 message deviceRequest {
  string massData = 1;
@@ -30,4 +31,13 @@ message deviceRequest {
 
 message deviceList {
  string val = 1;
+}
+
+
+message printRequest {
+ string request = 1;
+}
+
+message printResponse {
+ string comfirm = 1;
 }

@@ -62,6 +62,38 @@ public final class userGrpc {
      return getDeviceCheckMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<grpc.examples.securityDeviceCheck.printRequest,
+      grpc.examples.securityDeviceCheck.printResponse> getPrintOutMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "printOut",
+      requestType = grpc.examples.securityDeviceCheck.printRequest.class,
+      responseType = grpc.examples.securityDeviceCheck.printResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<grpc.examples.securityDeviceCheck.printRequest,
+      grpc.examples.securityDeviceCheck.printResponse> getPrintOutMethod() {
+    io.grpc.MethodDescriptor<grpc.examples.securityDeviceCheck.printRequest, grpc.examples.securityDeviceCheck.printResponse> getPrintOutMethod;
+    if ((getPrintOutMethod = userGrpc.getPrintOutMethod) == null) {
+      synchronized (userGrpc.class) {
+        if ((getPrintOutMethod = userGrpc.getPrintOutMethod) == null) {
+          userGrpc.getPrintOutMethod = getPrintOutMethod = 
+              io.grpc.MethodDescriptor.<grpc.examples.securityDeviceCheck.printRequest, grpc.examples.securityDeviceCheck.printResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "strings.user", "printOut"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  grpc.examples.securityDeviceCheck.printRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  grpc.examples.securityDeviceCheck.printResponse.getDefaultInstance()))
+                  .setSchemaDescriptor(new userMethodDescriptorSupplier("printOut"))
+                  .build();
+          }
+        }
+     }
+     return getPrintOutMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -99,6 +131,13 @@ public final class userGrpc {
       asyncUnimplementedUnaryCall(getDeviceCheckMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void printOut(grpc.examples.securityDeviceCheck.printRequest request,
+        io.grpc.stub.StreamObserver<grpc.examples.securityDeviceCheck.printResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getPrintOutMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -108,6 +147,13 @@ public final class userGrpc {
                 grpc.examples.securityDeviceCheck.deviceRequest,
                 grpc.examples.securityDeviceCheck.deviceList>(
                   this, METHODID_DEVICE_CHECK)))
+          .addMethod(
+            getPrintOutMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                grpc.examples.securityDeviceCheck.printRequest,
+                grpc.examples.securityDeviceCheck.printResponse>(
+                  this, METHODID_PRINT_OUT)))
           .build();
     }
   }
@@ -140,6 +186,14 @@ public final class userGrpc {
       asyncServerStreamingCall(
           getChannel().newCall(getDeviceCheckMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void printOut(grpc.examples.securityDeviceCheck.printRequest request,
+        io.grpc.stub.StreamObserver<grpc.examples.securityDeviceCheck.printResponse> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getPrintOutMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -170,6 +224,13 @@ public final class userGrpc {
       return blockingServerStreamingCall(
           getChannel(), getDeviceCheckMethod(), getCallOptions(), request);
     }
+
+    /**
+     */
+    public grpc.examples.securityDeviceCheck.printResponse printOut(grpc.examples.securityDeviceCheck.printRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getPrintOutMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -192,9 +253,18 @@ public final class userGrpc {
         io.grpc.CallOptions callOptions) {
       return new userFutureStub(channel, callOptions);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<grpc.examples.securityDeviceCheck.printResponse> printOut(
+        grpc.examples.securityDeviceCheck.printRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getPrintOutMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_DEVICE_CHECK = 0;
+  private static final int METHODID_PRINT_OUT = 1;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -216,6 +286,10 @@ public final class userGrpc {
         case METHODID_DEVICE_CHECK:
           serviceImpl.deviceCheck((grpc.examples.securityDeviceCheck.deviceRequest) request,
               (io.grpc.stub.StreamObserver<grpc.examples.securityDeviceCheck.deviceList>) responseObserver);
+          break;
+        case METHODID_PRINT_OUT:
+          serviceImpl.printOut((grpc.examples.securityDeviceCheck.printRequest) request,
+              (io.grpc.stub.StreamObserver<grpc.examples.securityDeviceCheck.printResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -279,6 +353,7 @@ public final class userGrpc {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new userFileDescriptorSupplier())
               .addMethod(getDeviceCheckMethod())
+              .addMethod(getPrintOutMethod())
               .build();
         }
       }

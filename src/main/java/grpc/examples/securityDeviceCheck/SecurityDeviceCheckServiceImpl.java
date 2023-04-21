@@ -24,6 +24,16 @@ public final class SecurityDeviceCheckServiceImpl {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_strings_deviceList_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_strings_printRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_strings_printRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_strings_printResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_strings_printResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -35,11 +45,14 @@ public final class SecurityDeviceCheckServiceImpl {
     java.lang.String[] descriptorData = {
       "\n\031securityDeviceCheck.proto\022\007strings\"!\n\r" +
       "deviceRequest\022\020\n\010massData\030\001 \001(\t\"\031\n\ndevic" +
-      "eList\022\013\n\003val\030\001 \001(\t2D\n\004user\022<\n\013deviceChec" +
-      "k\022\026.strings.deviceRequest\032\023.strings.devi" +
-      "ceList0\001BE\n!grpc.examples.securityDevice" +
-      "CheckB\036SecurityDeviceCheckServiceImplP\001b" +
-      "\006proto3"
+      "eList\022\013\n\003val\030\001 \001(\t\"\037\n\014printRequest\022\017\n\007re" +
+      "quest\030\001 \001(\t\" \n\rprintResponse\022\017\n\007comfirm\030" +
+      "\001 \001(\t2\177\n\004user\022<\n\013deviceCheck\022\026.strings.d" +
+      "eviceRequest\032\023.strings.deviceList0\001\0229\n\010p" +
+      "rintOut\022\025.strings.printRequest\032\026.strings" +
+      ".printResponseBE\n!grpc.examples.security" +
+      "DeviceCheckB\036SecurityDeviceCheckServiceI" +
+      "mplP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -65,6 +78,18 @@ public final class SecurityDeviceCheckServiceImpl {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_strings_deviceList_descriptor,
         new java.lang.String[] { "Val", });
+    internal_static_strings_printRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_strings_printRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_strings_printRequest_descriptor,
+        new java.lang.String[] { "Request", });
+    internal_static_strings_printResponse_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_strings_printResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_strings_printResponse_descriptor,
+        new java.lang.String[] { "Comfirm", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

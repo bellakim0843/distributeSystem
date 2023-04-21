@@ -1,39 +1,22 @@
 package grpc.examples.realtimeChat;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Iterator;
-import java.util.Scanner;
 import java.util.logging.Logger;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 //required grpc package for the server side
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
 //This is ImplBase class that was generated from the proto file.
 //You need to change this location for your projects. NOTICE: The class is in StringsServiceGrpc.java -> StringsServiceImplBase class (this Base class is generated from proto file option java_outer_classname)
 import grpc.examples.realtimeChat.chatGrpc.chatImplBase;
-
 
 //Extend the ImplBase imported class here. It is an Interface file with required rpc methods
 public class chatServer extends chatImplBase {
@@ -42,6 +25,7 @@ public class chatServer extends chatImplBase {
 	// instance will be used to log different events at the server console.
 	private static final Logger logger = Logger.getLogger(chatServer.class.getName());
 	private static final int port = 60011;
+
 	// Main method would contain the logic to start the server. For throws keyword
 	// refer https://www.javatpoint.com/throw-keyword
 	// NOTE: THIS LOGIC WILL BE SAME FOR ALL THE TYPES OF SERVICES
@@ -50,7 +34,7 @@ public class chatServer extends chatImplBase {
 		// The StringServer is the current file name/ class name. Using an instance of
 		// this class different methods could be invoked by the client.
 		chatServer stringserver = new chatServer();
-		
+
 		chatJMDNS();
 
 		// This is the port number where server will be listening to clients. Refer -
@@ -79,8 +63,6 @@ public class chatServer extends chatImplBase {
 	@Override
 	public StreamObserver<ServerSideChat> realtimeChat(StreamObserver<ClientSideChat> responseObserver) {
 
-
-
 		return new StreamObserver<ServerSideChat>() {
 
 			// For each message in the stream, get one stream at a time.
@@ -93,15 +75,11 @@ public class chatServer extends chatImplBase {
 				// Here, for each message in stream from client, server is sending back one
 				// response.
 
-				//Scanner sc = new Scanner(System.in);
-				//System.out.println("CHAT HERE");
-				//String serverChat = sc.nextLine();
 				String serverChat = JOptionPane.showInputDialog(request.getMessage());
 
-				ClientSideChat reply = ClientSideChat.newBuilder().setMessage("Server: " + serverChat+"\n").build();
+				ClientSideChat reply = ClientSideChat.newBuilder().setMessage("Server: " + serverChat + "\n").build();
 
 				responseObserver.onNext(reply);
-
 
 				// Preparing and sending the reply for the client. Here, response is build and
 				// with the value (input1.toString()) computed by above logic.
@@ -123,26 +101,20 @@ public class chatServer extends chatImplBase {
 
 		};
 	}
-	
+
 	@Override
 	public void fileUpload(upload request, StreamObserver<uploadSuccess> responseObserver) {
-		System.out.println("File Upload Message: "+request.getUploadRequest());
-	   
-	//   String output = sb.toString();
-		
-		uploadSuccess reply = uploadSuccess.newBuilder().setUploadConfirm("File added successfully!").build();
-		
-		/*unary 소통 안*/
-		
-		responseObserver.onNext(reply); 
-		responseObserver.onCompleted();
-		//	StatusRuntimeException er = new StatusRuntimeException(Status.ABORTED);
-		//	responseObserver.onError(er);
-		  
+		System.out.println("File Upload Message: " + request.getUploadRequest());
 
-		
+		uploadSuccess reply = uploadSuccess.newBuilder().setUploadConfirm("File added successfully!").build();
+
+		/* unary 소통 안 */
+
+		responseObserver.onNext(reply);
+		responseObserver.onCompleted();
+
 	}
-	
+
 	public static void chatJMDNS() {
 		try {
 			// Create a JmDNS instance
@@ -157,8 +129,6 @@ public class chatServer extends chatImplBase {
 			// Wait a bit
 			Thread.sleep(20000);
 
-			// Unregister all services
-			// jmdns.unregisterAllServices();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -168,7 +138,5 @@ public class chatServer extends chatImplBase {
 		}
 
 	}
-	
-	
 
 }

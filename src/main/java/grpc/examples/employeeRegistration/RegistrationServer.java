@@ -8,21 +8,15 @@ import java.util.logging.Logger;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 //required grpc package for the server side
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
-import grpc.examples.employeeRegistration.userGrpc.userBlockingStub;
 
 //This is ImplBase class that was generated from the proto file.
 //You need to change this location for your projects. NOTICE: The class is in StringsServiceGrpc.java -> StringsServiceImplBase class (this Base class is generated from proto file option java_outer_classname)
 import grpc.examples.employeeRegistration.userGrpcClient.userImplBase;
-import grpc.examples.employeeRegistration.RegistrationClient;
 
 //Extend the ImplBase imported class here. It is an Interface file with required rpc methods
 public class RegistrationServer extends userImplBase {
@@ -99,7 +93,7 @@ public class RegistrationServer extends userImplBase {
 			public void onNext(employee value) {
 				// Here, in this example we compute the value of string length for each message
 				// in the stream.
-				
+
 				sb.append("\n============");
 				sb.append("\n ID: " + value.getEmpNo() + "\n Name: " + value.getEmpName() + "\n Shift: "
 						+ value.getShift());
@@ -163,8 +157,6 @@ public class RegistrationServer extends userImplBase {
 			// Wait a bit
 			Thread.sleep(20000);
 
-			// Unregister all services
-			// jmdns.unregisterAllServices();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

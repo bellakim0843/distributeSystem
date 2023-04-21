@@ -1,25 +1,17 @@
 package grpc.examples.realtimeChat;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.InetAddress;
 //required java packages for the program. Depends on your logic.
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jmdns.JmDNS;
@@ -35,145 +27,50 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.filechooser.FileSystemView;
-
-import grpc.examples.employeeRegistration.userGrpcClient.userStub;
-
-//import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-
-import grpc.examples.realtimeChat.*;
 import grpc.examples.realtimeChat.chatGrpc.chatBlockingStub;
 //required grpc package for the client side
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
-import io.grpc.stub.StreamObserver; 
-
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-
-import javax.swing.JFileChooser;
+import io.grpc.stub.StreamObserver;
 
 //Client need not to extend any other class (GRPC related code) here
 public class chatClient {
-	
-	private static  Logger logger = Logger.getLogger(chatClient.class.getName());
-	
+
+	private static Logger logger = Logger.getLogger(chatClient.class.getName());
+
 	static String host = "_chat._tcp.local.";//
 	static String myhost = "localhost";
 	static int port = 60011; // 여기 포트 그대로 쓸 것 local host + port 넘버 입력. 나머지는 놔둘
 	static String resolvedIP;
-	
-	
-	// First we create a logger to show client side logs in the console. logger instance will be used to log different events at the client console.
-		// This is optional. Could be used if needed.
 
+	// First we create a logger to show client side logs in the console. logger
+	// instance will be used to log different events at the client console.
+	// This is optional. Could be used if needed.
 
 	// Creating stubs for establishing the connection with server.
-				// Blocking stub
+	// Blocking stub
 	private static chatGrpc.chatBlockingStub blockingStubChat;
 	// Asynch stub
 	private static chatGrpc.chatStub asyncStubChat;
-	
+
 	// The main method will have the logic for client.
 	public static void main(String[] args) throws Exception {
-		// First a channel is being created to the server from client. Here, we provide the server name (localhost) and port (50058).
-		// As it is a local demo of GRPC, we can have non-secured channel (usePlaintext).
+		// First a channel is being created to the server from client. Here, we provide
+		// the server name (localhost) and port (50058).
+		// As it is a local demo of GRPC, we can have non-secured channel
+		// (usePlaintext).
 
-//		asyncStubChat = chatGrpc.newStub(channel);
-
-		//bidirectional streaming
+		// bidirectional streaming
 
 		realtimeChat();
-	//	uploadFile();
-	
-		
 
-		// Closing the channel once message has been passed.		
-
+		// Closing the channel once message has been passed.
 
 	}
 
-
-//	public static void realtimeChat() {
-//		
-//		Scanner sc = new Scanner(System.in);
-//		System.out.println("Username");
-//		String name = sc.nextLine();
-//
-//		// Handling the server stream for client using onNext (logic for handling each message in stream), onError, onCompleted (logic will be executed after the completion of stream)
-//		StreamObserver<ClientSideChat> responseObserver = new StreamObserver<ClientSideChat>() {
-//
-//			@Override
-//			public void onNext(ClientSideChat value) {
-//
-//				System.out.println(name+": " + value.getMessage());
-//
-//			}
-//
-//			@Override
-//			public void onError(Throwable t) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//
-//			@Override
-//			public void onCompleted() {
-//				// TODO Auto-generated method stub
-//				System.out.println("server completed");
-//			}
-//
-//
-//
-//		};
-//
-//		// Here, we are calling the Remote reverseStream method. Using onNext, client sends a stream of messages.
-//		StreamObserver<ServerSideChat> requestObserver = asyncStub.realtimeChat(responseObserver);
-//
-//
-//		
-//try {
-//			
-//			for(int i =0; i<4; i++) {
-//				
-//			System.out.println("Input");
-//			String myText = sc.nextLine();
-//		    requestObserver.onNext(ServerSideChat.newBuilder().setMessage(myText).build());
-//		
-//			
-//			}
-//
-//
-//			System.out.println("SENDING EMSSAGES");
-//
-//			// Mark the end of requests
-//			requestObserver.onCompleted();
-//
-//
-//			// Sleep for a bit before sending the next one.
-//			Thread.sleep(new Random().nextInt(1000) + 500);
-//
-//
-//		} catch (RuntimeException e) {
-//			e.printStackTrace();
-//		} catch (InterruptedException e) {			
-//			e.printStackTrace();
-//		}
-//
-//
-//	}
-	
-
-	
 	public static void realtimeChat() {
-		
+
 		clientJMDNS();
 
 		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 60011).usePlaintext().build();
@@ -182,7 +79,6 @@ public class chatClient {
 		asyncStubChat = chatGrpc.newStub(channel);
 
 		Scanner sc = new Scanner(System.in);
-		// System.out.println("Username");
 		String name = JOptionPane.showInputDialog("Please input your name.");
 
 		JFrame chatFrame = new JFrame();
@@ -229,7 +125,7 @@ public class chatClient {
 		clientChatInput.setPreferredSize(new Dimension(425, 40));
 
 		JButton clientChatButton = new JButton("Send");
-		
+
 		JButton uploadButton = new JButton("Upload the file");
 
 		JButton quitButton = new JButton("Quit");
@@ -253,7 +149,7 @@ public class chatClient {
 		gbc2.gridx = 0;
 		gbc2.gridy = 0;
 		namePanel2.add(clientChatButton, gbc2);
-		
+
 		gbc2.gridx = 1;
 		gbc2.gridy = 0;
 		namePanel2.add(uploadButton, gbc2);
@@ -270,7 +166,6 @@ public class chatClient {
 			@Override
 			public void onNext(ClientSideChat value) {
 				StringBuilder sb = new StringBuilder();
-				// clientChatBox.setText("");
 				sb.append(value.getMessage());
 				clientChatBox.append(sb.toString());
 
@@ -308,16 +203,11 @@ public class chatClient {
 				clientChatInput.setText("");
 			});
 
-			//System.out.println("SENDING EMSSAGES");
-			
 			uploadButton.addActionListener(e -> {
 
-			uploadFile();
+				uploadFile();
 
 			});
-			
-			
-			
 
 			quitButton.addActionListener(e -> {
 
@@ -341,46 +231,42 @@ public class chatClient {
 	}
 
 	public static void uploadFile() {
-		
+
 		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 60011).usePlaintext().build();
 
 		// stubs -- generate from proto
-		//asyncStubChat = chatGrpc.newStub(channel);
+
 		chatBlockingStub blockingStubChat = chatGrpc.newBlockingStub(channel);
-		
+
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 		int result = fileChooser.showOpenDialog(fileChooser);
-		
+
 		if (result == JFileChooser.APPROVE_OPTION) {
-		    File selectedFile = fileChooser.getSelectedFile();
-		    //System.out.println(selectedFile.getName());
-		    
-		    String fileName = selectedFile.getName();
-		    
+			File selectedFile = fileChooser.getSelectedFile();
+
+			String fileName = selectedFile.getName();
+
 			upload req = upload.newBuilder().setUploadRequest(fileName).build();
 			System.out.println(req.toString());
-			
+
 			try {
-				
+
 				upload request = upload.newBuilder().setUploadRequest(fileName).build();
-				
+
 				uploadSuccess reply = blockingStubChat.fileUpload(request);
 				System.out.println(reply.toString());
-				System.out.println(fileName+" File uploaded completely!");
-			}catch(StatusRuntimeException ex){
+				System.out.println(fileName + " File uploaded completely!");
+			} catch (StatusRuntimeException ex) {
 				System.out.print(ex.getMessage());
 			}
 
-			//System.out.println(response+"aaaaa");
 			channel.shutdown();
 
 		}
-		
 
-		
 	}
-	
+
 	private static class ChatListener implements ServiceListener {
 		public void serviceAdded(ServiceEvent event) {
 			System.out.println("Service added: " + event.getInfo());
@@ -400,7 +286,7 @@ public class chatClient {
 			System.out.println("IP Resolved - " + resolvedIP + ":" + port);
 		}
 	}
-	
+
 	public static void clientJMDNS() {
 
 		try {
@@ -420,14 +306,6 @@ public class chatClient {
 			System.out.println(e.getMessage());
 		}
 
-		
-
 	}
-	
-
-	
-
-
-
 
 }

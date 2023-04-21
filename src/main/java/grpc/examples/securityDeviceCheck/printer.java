@@ -5,6 +5,9 @@ package grpc.examples.securityDeviceCheck;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -71,20 +74,51 @@ public static void print(String string) {
 	        System.exit(0);
 	      }
 	    });
+	    
+		GridBagLayout layout = new GridBagLayout();
+		f.setLayout(layout);
+	    
+	    
 	    JTextArea text = new JTextArea(500, 1500);
 	    text.append(string);
 	    JScrollPane pane = new JScrollPane(text);
 	    pane.setPreferredSize(new Dimension(400, 400));
-	    f.add("Center", pane);
+	    f.add( pane);
+	    
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(5, 5, 5, 5);
 	    JButton printButton = new JButton("Print Out");
+	    JButton closeButton = new JButton("Close");
+	    
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		f.add(pane, gbc);
+
+		
+		gbc.gridx = 0;
+		gbc.gridy =1;
+		f.add(printButton, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		f.add(closeButton, gbc);
+	    
 	    printButton.addActionListener(new printer(f));
-	    f.add("South", printButton);
+	    
+	    closeButton.addActionListener(e -> {
+
+			f.dispose();
+		
+		});
+	    
+	    
+	   // f.add("South", printButton);
 	    f.pack();
 	    f.setVisible(true);
 	  
   }
 
   public static void main(String args[]) {
-	  //print();
+	  print("AAAA");
   }
 }
