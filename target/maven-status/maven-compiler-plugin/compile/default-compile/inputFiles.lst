@@ -1,7 +1,9 @@
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/securityDeviceCheck/SecurityDeviceCheckServiceImpl.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/securityDeviceCheck/deviceListOrBuilder.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/realtimeChat/ClientSideChat.java
+/Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/realtimeChat/uploadSuccess.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/realtimeChat/ServerSideChatOrBuilder.java
+/Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/realtimeChat/upload.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/securityDeviceCheck/userGrpc.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/securityDeviceCheck/deviceList.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/client/guiClient.java
@@ -17,6 +19,7 @@
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/employeeRegistration/employeeOrBuilder.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/realtimeChat/chatClient.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/securityDeviceCheck/checkServer.java
+/Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/realtimeChat/fileChooser.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/employeeRegistration/EmployeeRegistrationServiceImpl.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/securityDeviceCheck/checkClient.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/employeeRegistration/loginRequestOrBuilder.java
@@ -25,7 +28,9 @@
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/realtimeChat/chatGrpc.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/realtimeChat/realtimeChatServiceImpl.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/realtimeChat/chatServer.java
+/Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/realtimeChat/uploadSuccessOrBuilder.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/employeeRegistration/loginRequest.java
+/Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/realtimeChat/uploadOrBuilder.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/employeeRegistration/loginResponseOrBuilder.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/employeeRegistration/RegistrationServer.java
 /Users/nakyungkim/Downloads/StringGRPCClient/src/main/java/grpc/examples/securityDeviceCheck/deviceRequest.java

@@ -24,6 +24,16 @@ public final class realtimeChatServiceImpl {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_strings_ClientSideChat_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_strings_upload_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_strings_upload_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_strings_uploadSuccess_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_strings_uploadSuccess_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -35,11 +45,14 @@ public final class realtimeChatServiceImpl {
     java.lang.String[] descriptorData = {
       "\n\022realtimeChat.proto\022\007strings\"!\n\016ServerS" +
       "ideChat\022\017\n\007message\030\001 \001(\t\"!\n\016ClientSideCh" +
-      "at\022\017\n\007message\030\001 \001(\t2N\n\004chat\022F\n\014realtimeC" +
-      "hat\022\027.strings.ServerSideChat\032\027.strings.C" +
-      "lientSideChat\"\000(\0010\001B7\n\032grpc.examples.rea" +
-      "ltimeChatB\027realtimeChatServiceImplP\001b\006pr" +
-      "oto3"
+      "at\022\017\n\007message\030\001 \001(\t\"\037\n\006upload\022\025\n\ruploadR" +
+      "equest\030\001 \001(\t\"&\n\ruploadSuccess\022\025\n\ruploadC" +
+      "onfirm\030\001 \001(\t2\203\001\n\004chat\022D\n\014realtimeChat\022\027." +
+      "strings.ServerSideChat\032\027.strings.ClientS" +
+      "ideChat(\0010\001\0225\n\nfileUpload\022\017.strings.uplo" +
+      "ad\032\026.strings.uploadSuccessB7\n\032grpc.examp" +
+      "les.realtimeChatB\027realtimeChatServiceImp" +
+      "lP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -65,6 +78,18 @@ public final class realtimeChatServiceImpl {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_strings_ClientSideChat_descriptor,
         new java.lang.String[] { "Message", });
+    internal_static_strings_upload_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_strings_upload_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_strings_upload_descriptor,
+        new java.lang.String[] { "UploadRequest", });
+    internal_static_strings_uploadSuccess_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_strings_uploadSuccess_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_strings_uploadSuccess_descriptor,
+        new java.lang.String[] { "UploadConfirm", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -62,6 +62,38 @@ public final class chatGrpc {
      return getRealtimeChatMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<grpc.examples.realtimeChat.upload,
+      grpc.examples.realtimeChat.uploadSuccess> getFileUploadMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "fileUpload",
+      requestType = grpc.examples.realtimeChat.upload.class,
+      responseType = grpc.examples.realtimeChat.uploadSuccess.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<grpc.examples.realtimeChat.upload,
+      grpc.examples.realtimeChat.uploadSuccess> getFileUploadMethod() {
+    io.grpc.MethodDescriptor<grpc.examples.realtimeChat.upload, grpc.examples.realtimeChat.uploadSuccess> getFileUploadMethod;
+    if ((getFileUploadMethod = chatGrpc.getFileUploadMethod) == null) {
+      synchronized (chatGrpc.class) {
+        if ((getFileUploadMethod = chatGrpc.getFileUploadMethod) == null) {
+          chatGrpc.getFileUploadMethod = getFileUploadMethod = 
+              io.grpc.MethodDescriptor.<grpc.examples.realtimeChat.upload, grpc.examples.realtimeChat.uploadSuccess>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "strings.chat", "fileUpload"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  grpc.examples.realtimeChat.upload.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  grpc.examples.realtimeChat.uploadSuccess.getDefaultInstance()))
+                  .setSchemaDescriptor(new chatMethodDescriptorSupplier("fileUpload"))
+                  .build();
+          }
+        }
+     }
+     return getFileUploadMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -102,6 +134,13 @@ public final class chatGrpc {
       return asyncUnimplementedStreamingCall(getRealtimeChatMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void fileUpload(grpc.examples.realtimeChat.upload request,
+        io.grpc.stub.StreamObserver<grpc.examples.realtimeChat.uploadSuccess> responseObserver) {
+      asyncUnimplementedUnaryCall(getFileUploadMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -111,6 +150,13 @@ public final class chatGrpc {
                 grpc.examples.realtimeChat.ServerSideChat,
                 grpc.examples.realtimeChat.ClientSideChat>(
                   this, METHODID_REALTIME_CHAT)))
+          .addMethod(
+            getFileUploadMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                grpc.examples.realtimeChat.upload,
+                grpc.examples.realtimeChat.uploadSuccess>(
+                  this, METHODID_FILE_UPLOAD)))
           .build();
     }
   }
@@ -146,6 +192,14 @@ public final class chatGrpc {
       return asyncBidiStreamingCall(
           getChannel().newCall(getRealtimeChatMethod(), getCallOptions()), responseObserver);
     }
+
+    /**
+     */
+    public void fileUpload(grpc.examples.realtimeChat.upload request,
+        io.grpc.stub.StreamObserver<grpc.examples.realtimeChat.uploadSuccess> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getFileUploadMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -167,6 +221,13 @@ public final class chatGrpc {
     protected chatBlockingStub build(io.grpc.Channel channel,
         io.grpc.CallOptions callOptions) {
       return new chatBlockingStub(channel, callOptions);
+    }
+
+    /**
+     */
+    public grpc.examples.realtimeChat.uploadSuccess fileUpload(grpc.examples.realtimeChat.upload request) {
+      return blockingUnaryCall(
+          getChannel(), getFileUploadMethod(), getCallOptions(), request);
     }
   }
 
@@ -190,9 +251,18 @@ public final class chatGrpc {
         io.grpc.CallOptions callOptions) {
       return new chatFutureStub(channel, callOptions);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<grpc.examples.realtimeChat.uploadSuccess> fileUpload(
+        grpc.examples.realtimeChat.upload request) {
+      return futureUnaryCall(
+          getChannel().newCall(getFileUploadMethod(), getCallOptions()), request);
+    }
   }
 
-  private static final int METHODID_REALTIME_CHAT = 0;
+  private static final int METHODID_FILE_UPLOAD = 0;
+  private static final int METHODID_REALTIME_CHAT = 1;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -211,6 +281,10 @@ public final class chatGrpc {
     @java.lang.SuppressWarnings("unchecked")
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
+        case METHODID_FILE_UPLOAD:
+          serviceImpl.fileUpload((grpc.examples.realtimeChat.upload) request,
+              (io.grpc.stub.StreamObserver<grpc.examples.realtimeChat.uploadSuccess>) responseObserver);
+          break;
         default:
           throw new AssertionError();
       }
@@ -276,6 +350,7 @@ public final class chatGrpc {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new chatFileDescriptorSupplier())
               .addMethod(getRealtimeChatMethod())
+              .addMethod(getFileUploadMethod())
               .build();
         }
       }

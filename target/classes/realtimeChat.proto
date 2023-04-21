@@ -19,8 +19,9 @@ package strings;
 service chat {
 
 // rpc method for bidirectional streaming calls
-  rpc realtimeChat(stream ServerSideChat) returns (stream ClientSideChat) {}
+  rpc realtimeChat(stream ServerSideChat) returns (stream ClientSideChat);
 
+  rpc fileUpload(upload) returns(uploadSuccess);
 }
 
 // define each variable in rpc method separately
@@ -31,4 +32,12 @@ message ServerSideChat {
 
 message ClientSideChat {
   string message = 1;
+}
+
+message upload{
+	string uploadRequest = 1;
+
+}
+message uploadSuccess{
+	string uploadConfirm = 1;
 }

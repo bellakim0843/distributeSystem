@@ -3,8 +3,12 @@ package grpc.examples.securityDeviceCheck;
 
 //required java packages for the program. Depends on your logic.
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.logging.Logger;
+
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceInfo;
 
 //required grpc package for the server side
 import io.grpc.Server;
@@ -12,14 +16,13 @@ import io.grpc.ServerBuilder;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
-
 //This is ImplBase class that was generated from the proto file.
 //You need to change this location for your projects. NOTICE: The class is in StringsServiceGrpc.java -> StringsServiceImplBase class (this Base class is generated from proto file option java_outer_classname)
 import grpc.examples.securityDeviceCheck.userGrpcServer.userImplBase;
 
 //Extend the ImplBase imported class here. It is an Interface file with required rpc methods
 public class checkServer extends userImplBase {
-
+	static int port = 50055;
 	// First we create a logger to show server side logs in the console. logger instance will be used to log different events at the server console.
 	private static final Logger logger = Logger.getLogger(checkServer.class.getName());
 
@@ -28,22 +31,31 @@ public class checkServer extends userImplBase {
 	 public static void main(String[] args) throws IOException, InterruptedException {
 		
 		 // The StringServer is the current file name/ class name. Using an instance of this class different methods could be invoked by the client.
-		 	checkServer stringserver = new checkServer();
+		 	//checkServer stringserver = new checkServer();
 		   
 		 // This is the port number where server will be listening to clients. Refer - https://en.wikipedia.org/wiki/Port_(computer_networking)	
-		    int port = 50073;
 		    
-		 // Here, we create a server on the port defined in in variable "port" and attach a service "stringserver" (instance of the class) defined above.
-		    Server server = ServerBuilder.forPort(port) // Port is defined in line 34
-		        .addService(stringserver) // Service is defined in line 31
-		        .build() // Build the server
-		        .start(); // Start the server and keep it running for clients to contact.
+		    checkServer greeterserver = new checkServer();
+			
+			
+			Server server;
+			try {
+				server = ServerBuilder.forPort(port).addService(greeterserver).build().start();
+				System.out.println("Server started....");
+				testJMDNS();
+				server.awaitTermination();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}	
 		    
 		    // Giving a logging information on the server console that server has started
 		    logger.info("Server-streaming Server is started, listening on " + port);
 		    		    
 		    // Server will be running until externally terminated.
-		    server.awaitTermination();
+		  //  server.awaitTermination();
 	 }
 
 	// These RPC methods have been defined in the proto files. The interface is already present in the ImplBase File.
@@ -70,6 +82,31 @@ public class checkServer extends userImplBase {
 		 
 		 responseObserver.onCompleted();
 	}
+	
+		public static void testJMDNS() {
+			try {
+	            // Create a JmDNS instance
+	            JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
+
+	            // Register a service
+	            ServiceInfo serviceInfo = ServiceInfo.create("_http._tcp.local.", "example", port, "path=index.html");
+	            System.out.println("Service Registration..");
+	            jmdns.registerService(serviceInfo);
+	            System.out.println("Service Registration..  2");
+	            // Wait a bit
+	            Thread.sleep(20000);
+
+	            // Unregister all services
+	            //jmdns.unregisterAllServices();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+		}
+	 
+	 
+	 
+	 
 		
 }
 

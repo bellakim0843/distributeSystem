@@ -99,6 +99,7 @@ public class RegistrationServer extends userImplBase {
 			public void onNext(employee value) {
 				// Here, in this example we compute the value of string length for each message
 				// in the stream.
+				
 				sb.append("\n============");
 				sb.append("\n ID: " + value.getEmpNo() + "\n Name: " + value.getEmpName() + "\n Shift: "
 						+ value.getShift());
