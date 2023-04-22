@@ -11,7 +11,6 @@ import java.io.File;
 import java.net.InetAddress;
 //required java packages for the program. Depends on your logic.
 import java.util.Random;
-import java.util.Scanner;
 import java.util.logging.Logger;
 
 import javax.jmdns.JmDNS;
@@ -22,7 +21,6 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -34,52 +32,37 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
-//Client need not to extend any other class (GRPC related code) here
 public class chatClient {
 
 	private static Logger logger = Logger.getLogger(chatClient.class.getName());
 
-	static String host = "_chat._tcp.local.";//
-	static String myhost = "localhost";
-	static int port = 60011; // 여기 포트 그대로 쓸 것 local host + port 넘버 입력. 나머지는 놔둘
-	static String resolvedIP;
-
-	// First we create a logger to show client side logs in the console. logger
-	// instance will be used to log different events at the client console.
-	// This is optional. Could be used if needed.
-
-	// Creating stubs for establishing the connection with server.
-	// Blocking stub
-	private static chatGrpc.chatBlockingStub blockingStubChat;
-	// Asynch stub
 	private static chatGrpc.chatStub asyncStubChat;
 
-	// The main method will have the logic for client.
+	/*
+	 * I implemented JMDNS in client side successfully and it worked. But the thing
+	 * is, when i call JMDNS Method, I can't get message from server. And all the
+	 * other services have same issue. So I decided to use server side JMDNS only in
+	 * this code. And client side host and port value will be set in static value.
+	 **/
+
+	static String host = "localhost";
+	static String myhost;
+	static int port = 60011;
+	static String resolvedIP;
+
 	public static void main(String[] args) throws Exception {
-		// First a channel is being created to the server from client. Here, we provide
-		// the server name (localhost) and port (50058).
-		// As it is a local demo of GRPC, we can have non-secured channel
-		// (usePlaintext).
-
-		// bidirectional streaming
-
-		//realtimeChat();
-
-		// Closing the channel once message has been passed.
 
 	}
 
+	/* This method will be received argument from guiClient class */
 	public static void realtimeChat(String str) {
-
-		clientJMDNS();
 
 		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 60011).usePlaintext().build();
 
-		// stubs -- generate from proto
 		asyncStubChat = chatGrpc.newStub(channel);
 
+		/* Set the chat client's name as employee name */
 		String name = str;
-				//JOptionPane.showInputDialog("Please input your name.");
 
 		JFrame chatFrame = new JFrame();
 
@@ -158,9 +141,11 @@ public class chatClient {
 		gbc2.gridy = 0;
 		namePanel2.add(quitButton, gbc2);
 
-		// Handling the server stream for client using onNext (logic for handling each
-		// message in stream), onError, onCompleted (logic will be executed after the
-		// completion of stream)
+		/*
+		 * The StreamObserver<ClientSideChat> object is used to handle the server's
+		 * responses and the StreamObserver<ServerSideChat> object is used to send
+		 * requests to the server.
+		 */
 		StreamObserver<ClientSideChat> responseObserver = new StreamObserver<ClientSideChat>() {
 
 			@Override
@@ -168,7 +153,7 @@ public class chatClient {
 				StringBuilder sb = new StringBuilder();
 				sb.append(value.getMessage());
 				clientChatBox.append(sb.toString());
-
+				// printout the chat detail in the textarea and console.
 				System.out.println(value.getMessage());
 
 			}
@@ -187,16 +172,18 @@ public class chatClient {
 
 		};
 
-		// Here, we are calling the Remote reverseStream method. Using onNext, client
-		// sends a stream of messages.
+		/*
+		 * The requestObserver object is created by calling the realtimeChat() method on
+		 * the asyncStubChat object. This method returns a
+		 * StreamObserver<ServerSideChat> object that can be used to send messages to
+		 * the server.
+		 */
 		StreamObserver<ServerSideChat> requestObserver = asyncStubChat.realtimeChat(responseObserver);
 
 		try {
-
+			/* If user clicks the button, it direct to the action. */
 			clientChatButton.addActionListener(e -> {
-
 				String myText = clientChatInput.getText();
-
 				requestObserver.onNext(ServerSideChat.newBuilder().setMessage(name + ": " + myText).build());
 				System.out.println(name + ": " + myText);
 				clientChatBox.append(name + ": " + myText + "\n");
@@ -210,13 +197,12 @@ public class chatClient {
 			});
 
 			quitButton.addActionListener(e -> {
-
+				// If user click the quit button, Observer will be finished.
 				requestObserver.onCompleted();
 				chatFrame.dispose();
 
 			});
 
-			// Sleep for a bit before sending the next one.
 			Thread.sleep(new Random().nextInt(1000) + 500);
 
 		}
@@ -234,14 +220,14 @@ public class chatClient {
 
 		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 60011).usePlaintext().build();
 
-		// stubs -- generate from proto
-
 		chatBlockingStub blockingStubChat = chatGrpc.newBlockingStub(channel);
 
+		/* Using JFileChooser to implement file upload */
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 		int result = fileChooser.showOpenDialog(fileChooser);
 
+		/* if user click choose the file, the name of file set as the message */
 		if (result == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = fileChooser.getSelectedFile();
 
@@ -267,40 +253,26 @@ public class chatClient {
 
 	}
 
-	private static class ChatListener implements ServiceListener {
-		public void serviceAdded(ServiceEvent event) {
-			System.out.println("Service added: " + event.getInfo());
-		}
-
-		public void serviceRemoved(ServiceEvent event) {
-			System.out.println("Service removed: " + event.getInfo());
-		}
-
-		@SuppressWarnings("deprecation")
-		public void serviceResolved(ServiceEvent event) {
-			System.out.println("Service resolved: " + event.getInfo());
-
-			ServiceInfo info = event.getInfo();
-			port = info.getPort();
-			resolvedIP = info.getHostAddress();
-			System.out.println("IP Resolved - " + resolvedIP + ":" + port);
-		}
-	}
-
-	public static void clientJMDNS() {
+	public static void chatJMDNS() {
 
 		try {
+
 			// Create a JmDNS instance
-			JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
-			System.out.println("Real-time chat application is being opened..");
+			JmDNS jmdnsChat = JmDNS.create();
+			// Put the service information in the serviceInfo[] array.
+			ServiceInfo[] chatServices = jmdnsChat.list("_chat._tcp.local.");
+			// If service is null, this message will be printed out.
+			if (chatServices.length == 0) {
+				System.out.println("There is no gRPC server here!");
+				return;
+			}
 
-			// Add a service listener
-			jmdns.addServiceListener(host, new ChatListener());
+			// Initianlize static host and port
+			ServiceInfo serviceInfo = chatServices[0];
+			host = serviceInfo.getHostAddresses()[0];
+			port = serviceInfo.getPort();
 
-			System.out.println("Please wait the moment..");
-
-			// Wait a bit
-			Thread.sleep(20000);
+			System.out.println("JmDNS is started!..");
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

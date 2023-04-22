@@ -7,81 +7,76 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.net.InetAddress;
-//required java packages for the program. Depends on your logic.
+
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.jmdns.JmDNS;
-import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
-import javax.jmdns.ServiceListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-//required grpc package for the client side
+
+import io.grpc.Deadline;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 
-
-//Client need not to extend any other class (GRPC related code) here
 public class checkClient {
 
-	JFrame frameToPrint;
-	static String host = "_check._tcp.local.";//
-	static String myhost = "localhost";
-	static int port = 50056; // 여기 포트 그대로 쓸 것 local host + port 넘버 입력. 나머지는 놔둘
-	static String resolvedIP;
-	// First we create a logger to show client side logs in the console. logger
-	// instance will be used to log different events at the client console.
-	// This is optional. Could be used if needed.
 	private static Logger logger = Logger.getLogger(checkClient.class.getName());
 
-	// Creating stubs for establishing the connection with server.
-	// Blocking stub
-	private static userGrpc.userBlockingStub blockingStubDevice;
 	private static userGrpc.userBlockingStub blockingStubCheck;
 
-	// The main method will have the logic for client.
+	/*
+	 * I implemented JMDNS in successfully and it worked. But the thing is, when i
+	 * call JMDNS Method, I can't get message from server. And all the other
+	 * services have same issue. So I decided to use server side JMDNS only in this
+	 * code. And client side host and port value will be set in static value.
+	 **/
+
+	JFrame frameToPrint;
+	static String host = "localhost";
+	static int port = 50056;
+	static String resolvedIP;
+
 	public static void main(String[] args) throws Exception {
-		// First a channel is being created to the server from client. Here, we provide
-		// the server name (localhost) and port (50057).
-		// As it is a local demo of GRPC, we can have non-secured channel
-		// (usePlaintext).
 
-		// RPC call with Asynchronous stub
+		// serverJMDNS();
+//		System.out.println(host);
+//		System.out.println(port);
 
-		// RPC call with Blocking stub
 		securityDeviceCheck();
 
-		// Closing the channel once message has been passed.
 
 	}
 
 	public static void securityDeviceCheck() {
 
-		ManagedChannel channel = ManagedChannelBuilder.forAddress(myhost, port).usePlaintext().build();
+		ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
 
-		// stubs -- generate from proto
-		blockingStubDevice = userGrpc.newBlockingStub(channel);
-
-		serverJMDNS();
+		// Create blockingStub to react server side's message.
+		blockingStubCheck = userGrpc.newBlockingStub(channel);
 
 		int totalNumber = 0;
-		// First creating a request message. Here, the message contains a string in
-		// setVal
+
+		/*
+		 * We're using Protocol Buffers to sent the Massdata to the server.
+		 * I implemented dataset() as method.
+		 */
 		deviceRequest request = deviceRequest.newBuilder().setMassData(dataSet()).build();
 
-		// as this call is blocking. The client will not proceed until all the messages
-		// in stream has been received.
 		try {
-			// Iterating each message in response when calling remote split RPC method.
-			Iterator<deviceList> responses = blockingStubDevice.deviceCheck(request);
-
+		
+			/*The Iterator<deviceList> creates an iterator over the stream of deviceList messages 
+			 * received from the server.*/
+			Iterator<deviceList> responses = blockingStubCheck.deviceCheck(request);
+			
+			/*GUI*/
 			JFrame deviceFrame = new JFrame();
 
 			deviceFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -137,17 +132,18 @@ public class checkClient {
 
 			deviceFrame.setVisible(true);
 
-	
-			// Client keeps a check on the next message in stream.
+			/*Append device list in the textarea in order */
 			while (responses.hasNext()) {
 				deviceList temp = responses.next();
 				System.out.println(temp.getVal());
 				list.append(temp.getVal() + "\n=============================");
 				totalNumber++;
 			}
-
+			/*Indicate total number of the devices */
 			list.append("\nTotal " + totalNumber + " devices are in the company.");
-	
+
+			/*If users click the button, they can print out the list of the devices
+			 * I implemented with printer class in same package. */
 			printButton.addActionListener(e -> {
 				printOut();
 				printer pp = new printer(deviceFrame);
@@ -157,7 +153,6 @@ public class checkClient {
 
 			closeButton.addActionListener(e -> {
 				deviceFrame.dispose();
-			
 			});
 
 		} catch (StatusRuntimeException e) {
@@ -168,44 +163,29 @@ public class checkClient {
 
 	}
 
-	private static class checkListener implements ServiceListener {
-		public void serviceAdded(ServiceEvent event) {
-			System.out.println("Service added: " + event.getInfo());
-		}
-
-		public void serviceRemoved(ServiceEvent event) {
-			System.out.println("Service removed: " + event.getInfo());
-		}
-
-		@SuppressWarnings("deprecation")
-		public void serviceResolved(ServiceEvent event) {
-			System.out.println("Service resolved: " + event.getInfo());
-
-			ServiceInfo info = event.getInfo();
-			port = info.getPort();
-			resolvedIP = info.getHostAddress();
-			System.out.println("IP Resolved - " + resolvedIP + ":" + port);
-		}
-	}
-
+	// But when i call JMDNS method, all of the client side has error.
+	// MAC OS has this kinds of error frequently.
+	// I decided not to use JMDNS in server side streaming.
 	public static void serverJMDNS() {
 
 		try {
+
 			// Create a JmDNS instance
-			JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
-			System.out.println("Security Devices List check program is being opened..");
-
-			// Add a service listener
-			jmdns.addServiceListener(host, new checkListener());
-
-			System.out.println("Please wait the moment..");
-
-			deviceRequest request = deviceRequest.newBuilder().setMassData("Data is transferring!").build();
-			deviceList reply = deviceList.newBuilder().setVal(request.getMassData()).build();
-			System.out.println(request.getMassData());
-
-			// Wait a bit
-			Thread.sleep(20000);
+			JmDNS jmdns = JmDNS.create();
+			System.out.println("Security Devices List check program is being started!");
+			// Put the service information in the serviceInfo[] array.
+			ServiceInfo[] services = jmdns.list("_check._tcp.local.");
+			// If service is null, this message will be printed out.
+			if (services.length == 0) {
+				System.out.println("There is no gRPC server here!");
+				return;
+			}
+			// Initianlize static host and port, It is working.
+			ServiceInfo serviceInfo = services[0];
+			host = serviceInfo.getHostAddresses()[0];
+			port = serviceInfo.getPort();
+			// I succeded to get host value and port value from JMDNS
+			System.out.println("JmDNS is started!..");
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -215,33 +195,44 @@ public class checkClient {
 
 	public static void printOut() {
 
-		ManagedChannel channel = ManagedChannelBuilder.forAddress(myhost, port).usePlaintext().build();
+		// Create a channel to communicate with the server.
+		ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
 
-		// stubs -- generate from proto
-		// asyncStubChat = chatGrpc.newStub(channel);
+		// Create a blocking stub to communicate with the server.
 		blockingStubCheck = userGrpc.newBlockingStub(channel);
 
+		// Set the deadline for the request to 5 seconds.
+		long deadlineMs = 5000L;
+
+		// Create the request message.
 		printRequest req = printRequest.newBuilder().setRequest("print requested").build();
+
 		try {
-			// Calling a remote RPC method using blocking stub defined in main method. req
-			// is the message we want to pass.
-			printResponse response = blockingStubCheck.printOut(req);
-			// response contains the output from the server side. Here, we are printing the
-			// value contained by response.
+			// Simulate a delay of 3 seconds before sending the response.
+			Thread.sleep(3000);
+
+			// Call the remote RPC method with the specified deadline.
+			printResponse response = blockingStubCheck.withDeadline(Deadline.after(deadlineMs, TimeUnit.MILLISECONDS))
+					.printOut(req);
+
+			// Print the response from the server.
 			System.out.println("Print Server " + response.toString());
 
 		} catch (StatusRuntimeException ex) {
-			// Print if any error/exception is generated.
+			// Print an error message if the RPC call fails.
+			System.out.println(ex.getMessage());
+		} catch (InterruptedException ex) {
+			// Print an error message if the thread is interrupted while sleeping.
 			System.out.println(ex.getMessage());
 		}
 
+		// Shutdown the channel when the RPC call is complete.
 		channel.shutdown();
-
 	}
-	
+
 	public static String dataSet() {
-		
-		String data = 	"Device No: 1\nDevice Type: Security Camera\nDevice Code: AAA2020\nDevice Location: Warehouse-Front,"
+
+		String data = "Device No: 1\nDevice Type: Security Camera\nDevice Code: AAA2020\nDevice Location: Warehouse-Front,"
 				+ "\nDevice No: 2\nDevice Type: Security Camera\nDevice Code: ACC2022\nDevice Location: Warehouse-Rear,"
 				+ "\nDevice No: 3\nDevice Type: Security Camera\nDevice Code: ABB2017\nDevice Location: Main entrance,"
 				+ "\nDevice No: 4\nDevice Type: Thermal Imaging Camera\nDevice Code: UPC2021\nDevice Location: Main entrance,"
@@ -264,12 +255,9 @@ public class checkClient {
 				+ "\nDevice No: 21\nDevice Type: Security Camera \nDevice Code: ACC2016\nDevice Location: Meeting room,"
 				+ "\nDevice No: 22\nDevice Type: Security Camera\nDevice Code: OMM2019\nDevice Location: Lab, "
 				+ "\nDevice No: 23\nDevice Type: Iris recognition Controller\nDevice Code: EYE2023\nDevice Location: Executive room,";
-		
-		
+
 		return data;
-		
-		
-		
+
 	}
 
 }

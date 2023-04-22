@@ -1,7 +1,6 @@
 package grpc.examples.employeeRegistration;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
@@ -30,21 +29,35 @@ public class RegistrationServer extends userImplBase {
 		//Registration Server is created.
 		RegistrationServer registrationserver = new RegistrationServer();
 
-	
-		//Create the server on the port(static) and addService on registrationserver
-		Server server = ServerBuilder.forPort(port) // using static port
-				.addService(registrationserver)
-				.build() // Start to build the registration server
-				.start(); // Start the server and running to connect with clients.
-		
-		// call JMDNS method here
-		testJMDNS();
-		
-		//logging information on the server console that server has started
-		logger.info("Employee Registration Server started, listening on " + port);
+		try {
+			// Create a JmDNS instance firstly.
+			
+			Server server = ServerBuilder.forPort(port) // using static port
+					.addService(registrationserver)
+					.build() // Start to build the registration server
+					.start(); // Start the server and running to connect with clients.
+			
+			System.out.println("Service Registration Server is being started!");
+			 // Register service through JmDNS
+	        JmDNS jmdns = JmDNS.create();
+	        //Declare serviceInfo with information.
+	        ServiceInfo serviceInfo = ServiceInfo.create("_registration._tcp.local.", "employeeRegistration", port, "registrationServer");
+	        jmdns.registerService(serviceInfo);
+			System.out.println("This Service is being processed!");
 
-		// Server will be running until externally terminated.
-		server.awaitTermination();
+			logger.info("Employee Registration Server started, listening on " + port);
+			Thread.sleep(20000);
+			server.awaitTermination();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			
+	
+		}
+
+
 	}
 	
 	
@@ -57,9 +70,8 @@ public class RegistrationServer extends userImplBase {
         //This String will be sent to the client side.
 		String myTest = "Welcome! " + request.getEmpName() + ", Please Sign-in the Application!";
 
-		// Logic
 		//Using loginResponse streamObserver and set Confirm message as string myTest.
-		//It will be delieved to the client side one by one
+		//It will be delievered to the client side one by one
 		loginResponse reply = loginResponse.newBuilder().setConfirm(myTest).build();
 
 		responseObserver.onNext(reply);
@@ -119,29 +131,5 @@ public class RegistrationServer extends userImplBase {
 		};
 	}
 
-
-	public static void testJMDNS() {
-		try {
-			// Create a JmDNS instance firstly.
-			JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
-
-			// Register a service with each value.
-			ServiceInfo serviceInfo = ServiceInfo.create("_grpc._tcp.local.", "employeeRegistration", port,
-					"Employee registration service");
-		    //After this, Server will be indicated the message.
-			System.out.println("Service Registration Server is being started!");
-			//registering JmDNS service with serviceInfo.
-			jmdns.registerService(serviceInfo);
-			System.out.println("This Service is being processed!");
-			Thread.sleep(20000);
-
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-		}
-
-	}
 
 }

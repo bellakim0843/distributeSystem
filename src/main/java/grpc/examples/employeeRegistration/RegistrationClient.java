@@ -34,52 +34,78 @@ import grpc.examples.employeeRegistration.userGrpcClient.userStub;
 
 public class RegistrationClient {
 
-	private static  Logger logger = Logger.getLogger(RegistrationClient.class.getName());
+	private static Logger logger = Logger.getLogger(RegistrationClient.class.getName());
 
-	//Due to error of JmDNS in mac, I set all argument in static.
+	// Due to error of JmDNS in mac, I set all argument in static.
 	private static userStub asyncStubClient;
 	private static userBlockingStub blockingStubClient;
-	static String host = "_grpc._tcp.local.";//
-	static String myhost = "localhost";
-	static int port = 50050;
-	static String resolvedIP;
+	
+	/*I implemented JMDNS in client side successfully and it worked.
+	*But the thing is, when i call JMDNS Method, I can't get message from server.
+	*And all the other services have same issue.
+	*So I decided to use server side JMDNS only in this code.
+	*And client side host and port value will be set in static value.
+	**/
+	
+	static String host = "localhost";//@If you want to check JMDNS.
+	static String myhost;//You can set value like this.
+	static int port = 50050;//static String myhost;
+	static String resolvedIP;//	static int port;
 
 	public static void main(String[] args) throws Exception {
 
-		//Using one main GUI, I decided not to call any method in main method.
-		//login();
-		//register();
+		// Using one main GUI, I decided not to call any method in main method.
+
+		/*If you check the host and port number that set from JMDNS
+		 * Please change the static value as indicated,
+		 * and remove the annotation below.*/
+		
+//		clientJMDNS();		
+// 		System.out.println(host);
+//		System.out.println(port);
+		login();
+		register();
+
 	}
-	
+
 	public static void login() {
 
-		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50050).usePlaintext().build();
+		ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
 
-		//Create blockingStub to react server side's message.
+		// Create blockingStub to react server side's message.
 		blockingStubClient = userGrpc.newBlockingStub(channel);
 
 		try {
-			/* We're using Protocol Buffers
-			to define the loginRequest and loginResponse messages 
-			that will be sent between the client and server.*/
+			/*
+			 * We're using Protocol Buffers to define the loginRequest and loginResponse
+			 * messages that will be sent between the client and server.
+			 */
+
 			loginRequest request = loginRequest.newBuilder().setEmpName("Worker").setEmpNo(19921019).build();
-			
-			/* We're calling the login() method on the blockingStubClient object, 
-			 * which is a gRPC stub generated from the Protocol Buffers. 
-			 * The blockingStub provides a blocking RPC (remote procedure call) style 
-			 * where the client waits for the response to be returned by the server 
-			 * before continuing execution. */
-			
-			loginResponse reply = blockingStubClient.login(request);
-			
-			/* The login() method sends the loginRequest message
-			 *  to the server and returns a loginResponse message */
-			
-			System.out.println("Message sent by the server " + reply.getConfirm());
-			
-			/* printing the confirmation message returned by the server
-			 *  to the console using the getConfirm() method */
-			
+
+			/*
+			 * We're calling the login() method on the blockingStubClient object, which is a
+			 * gRPC stub generated from the Protocol Buffers. The blockingStub provides a
+			 * blocking RPC (remote procedure call) style where the client waits for the
+			 * response to be returned by the server before continuing execution.
+			 */
+
+			loginResponse response = blockingStubClient.login(request);
+
+			// loginResponse reply = blockingStubClient.login(request);
+
+			/*
+			 * The login() method sends the loginRequest message to the server and returns a
+			 * loginResponse message
+			 */
+
+			System.out.println("Message sent by the server " + response.getConfirm());
+
+			/*
+			 * printing the confirmation message returned by the server to the console using
+			 * the getConfirm() method
+			 */
+
 		} catch (StatusRuntimeException e) {
 			e.getStatus();
 		} finally {
@@ -89,11 +115,11 @@ public class RegistrationClient {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			//After that, Call the register() method
-			 register();
 
-			//channel will be shut down
+			// After that, Call the register() method
+			// register();
+
+			// channel will be shut down
 			channel.shutdown();
 		}
 
@@ -101,15 +127,17 @@ public class RegistrationClient {
 
 	public static void register() {
 
-		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50050).usePlaintext().build();
+		ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
 
-		//Create asyncStub to react server side's message.
+		// Create asyncStub to react server side's message.
 		asyncStubClient = userGrpcClient.newStub(channel);
-		//Call JmDNS method() firstly.
-		clientJMDNS();
+		// Call JmDNS method() firstly.
+		// clientJMDNS();
 
-		/* Handling the stream for client using onNext, onError, 
-		 * onCompleted (logic will be executed after the completion of stream)*/
+		/*
+		 * Handling the stream for client using onNext, onError, onCompleted (logic will
+		 * be executed after the completion of stream)
+		 */
 		StreamObserver<employeeList> responseObserver = new StreamObserver<employeeList>() {
 
 			@Override
@@ -131,7 +159,7 @@ public class RegistrationClient {
 
 		};
 
-		//Using onNext, client sends a stream of messages.
+		// Using onNext, client sends a stream of messages.
 		StreamObserver<employee> requestObserver = asyncStubClient.register(responseObserver);
 
 		try {
@@ -163,10 +191,10 @@ public class RegistrationClient {
 
 			StringBuilder total = new StringBuilder();
 
-			/* Input the employee's number using JOptionPane*/
+			/* Input the employee's number using JOptionPane */
 			int number = Integer.parseInt(JOptionPane.showInputDialog("How many Employee will you register?"));
-			
-			/* Create the 2D Array to store employee's information*/
+
+			/* Create the 2D Array to store employee's information */
 			String[][] data = new String[number][3];
 
 			/* Using for-loop to set the value of work shift list */
@@ -180,16 +208,19 @@ public class RegistrationClient {
 				String b = data[i][1];
 				int c = Integer.parseInt(data[i][2]);
 
-				/* To print out the total list in the console,
-				 * I use stringbuilder to store the message */
+				/*
+				 * To print out the total list in the console, I use stringbuilder to store the
+				 * message
+				 */
 				total.append("\n ID: " + a + "\n Name: " + b + "\n Shift: " + c);
 				total.append("\n============");
-				
-				/*The code is building a new Employee message using the newBuilder() method 
-				 * of the Employee class. build() method is called to create the Employee message and
-				 *  pass it to the onNext() method of requestObserver.
-				 * */
-				
+
+				/*
+				 * The code is building a new Employee message using the newBuilder() method of
+				 * the Employee class. build() method is called to create the Employee message
+				 * and pass it to the onNext() method of requestObserver.
+				 */
+
 				requestObserver.onNext(employee.newBuilder().setEmpNo(a).setEmpName(b).setShift(c).build());
 
 			}
@@ -226,54 +257,31 @@ public class RegistrationClient {
 			e.printStackTrace();
 		}
 
-		channel.shutdown();
+		 channel.shutdown();
 
-	}
-	
-	/**/
-	private static class RegistrationListener implements ServiceListener {
-		
-		/*a message is printed to the console indicating that 
-		 * a service has been added and providing information about the service.*/
-		public void serviceAdded(ServiceEvent event) {
-			System.out.println("Service added: " + event.getInfo());
-		}
-		
-		/*a message is printed to the console indicating that
-		 *  a service has been removed and providing information about the service.*/
-		public void serviceRemoved(ServiceEvent event) {
-			System.out.println("Service removed: " + event.getInfo());
-		}
-		/*a message is printed to the console indicating that 
-		 * a service has been resolved and providing information about the service*/
-		
-		@SuppressWarnings("deprecation")
-		public void serviceResolved(ServiceEvent event) {
-			System.out.println("Service resolved: " + event.getInfo());
-			
-			/*the port and IP address of the service are extracted from the ServiceInfo object, 
-			 * and the port and resolvedIP static variables are set to these values*/
-			
-			ServiceInfo info = event.getInfo();
-			port = info.getPort();
-			resolvedIP = info.getHostAddress();
-			System.out.println("IP Resolved - " + resolvedIP + ":" + port);
-		}
 	}
 
 	public static void clientJMDNS() {
 
 		try {
+
 			// Create a JmDNS instance
-			JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
-			System.out.println("Employee Registration program is being opened..");
+			JmDNS jmdns = JmDNS.create();
+			// Put the service information in the serviceInfo[] array.
+			ServiceInfo[] services = jmdns.list("_registration._tcp.local.");
+			// If service is null, this message will be printed out.
+			if (services.length == 0) {
+				System.out.println("There is no gRPC server here!");
+				return;
+			}
 
-			// Add a service listener RegistrationListener()
-			jmdns.addServiceListener(host, new RegistrationListener());
+			// Initianlize static host and port
+			ServiceInfo serviceInfo = services[0];
+			host = serviceInfo.getHostAddresses()[0];
+			port = serviceInfo.getPort();
 
-			System.out.println("Please wait the moment..");
+			System.out.println("JmDNS is started!..");
 
-			Thread.sleep(20000);
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 
-//required java packages for the program. Depends on your logic.
-
 import java.util.Random;
 
 import javax.swing.JButton;
@@ -16,7 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-//required grpc package for the client side
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import grpc.examples.employeeRegistration.RegistrationClient;
@@ -25,32 +22,11 @@ import grpc.examples.employeeRegistration.loginResponse;
 import grpc.examples.realtimeChat.chatClient;
 import grpc.examples.securityDeviceCheck.checkClient;
 
-//Client need not to extend any other class (GRPC related code) here 
 public class guiClient {
-	// First we create a logger to show client side logs in the console. logger
-	// instance will be used to log different events at the client console.
-	// This is optional. Could be used if needed.
 
-	// Creating stubs for establishing the connection with server.
-	// Blocking stub
-//
-//	static String host = "_grpc._tcp.local.";//
-//	static String myhost = "localhost";
-//	static int JMDNSport = 50050; // 여기 포트 그대로 쓸 것 local host + port 넘버 입력. 나머지는 놔둘
-//	static String resolvedIP;
-
-	// The main method will have the logic for client.
 	public static void main(String[] args) throws Exception {
-		// First a channel is being created to the server from client. Here, we provide
-		// the server name (localhost) and port (50055).
-		// As it is a local demo of GRPC, we can have non-secured channel
-		// (usePlaintext).
-
-		// Unary RPC call
 
 		login();
-
-		// passing an empty message - no server reply, error message
 
 	}
 
@@ -58,21 +34,20 @@ public class guiClient {
 
 		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50050).usePlaintext().build();
 
-		//RegistrationClient.login();
-
 		try {
 			/* GUI */
 
-			JTextField id = new JTextField();
-			
+			/* When you test the code, id must match with password */
+			JTextField id = new JTextField(); // Id accepts only numeric value.
+
 			JTextField name = new JTextField();
 
-			JPasswordField pw = new JPasswordField();
+			JPasswordField pw = new JPasswordField();// pw accepts only same value with id
 
 			Object[] message = { "Employee ID:", id, "Employee Name:", name, "Password:", pw };
 
 			int option = JOptionPane.showConfirmDialog(null, message, "Login", JOptionPane.OK_CANCEL_OPTION);
-			
+
 			String idText = (id.getText());
 			System.out.println(idText);
 			String nameText = (name.getText());
@@ -80,27 +55,25 @@ public class guiClient {
 			String pwText = new String(pw.getPassword());
 			System.out.println(pwText);
 
+			// ID & Password Authentification. If it doesn't match, the system will be
+			// quitted.
 			if (option == JOptionPane.OK_OPTION) {
 				if (!idText.equals(pwText)) {
 					JOptionPane.showMessageDialog(null, "Username and Password mismatch ");
 					System.exit(option);
-				}else if(idText.matches("[^\\d]")) {
+				} else if (idText.matches("[^\\d]")) {
 					JOptionPane.showMessageDialog(null, "Please input the numeric value in the employee ID!");
 					System.exit(option);
 				}
-				
 
-				
+				loginRequest req = loginRequest.newBuilder().setEmpNo(Integer.parseInt(idText)).setEmpName(nameText)
+						.build();
 
-	
-				loginRequest req = loginRequest.newBuilder().setEmpNo(Integer.parseInt(idText)).setEmpName(nameText).build();
+				loginResponse response = loginResponse.newBuilder().setResponseMessage("Welcome! " + req.getEmpNo())
+						.setConfirm(req.getEmpName() + "\nLog-in Completed!").build();
 
-				String information = "Welcome! "+req.getEmpName()+", EmpNo: "+req.getEmpNo();
-				
-				loginResponse reponse = loginResponse.newBuilder().setResponseMessage("Welcome! " + req.getEmpNo()).setConfirm(req.getEmpName()+"\nLog-in Completed!").build();
-
-				JOptionPane.showConfirmDialog(null, reponse.getResponseMessage() + "\n" + reponse.getConfirm());
-				System.out.println(reponse.getResponseMessage() + "\n" + reponse.getConfirm());
+				JOptionPane.showConfirmDialog(null, response.getResponseMessage() + "\n" + response.getConfirm());
+				System.out.println(response.getResponseMessage() + "\n" + response.getConfirm());
 
 				JFrame frame = new JFrame();
 
@@ -148,8 +121,11 @@ public class guiClient {
 
 				frame.setVisible(true);
 
+				/* If user clicks the button, each method will be called! */
 				registrationButton.addActionListener(e -> {
 
+					RegistrationClient.clientJMDNS();
+					RegistrationClient.login();
 					RegistrationClient.register();
 				});
 
@@ -171,9 +147,6 @@ public class guiClient {
 
 			}
 
-			// Mark the end of requests
-
-			// Sleep for a bit before sending the next one.
 			Thread.sleep(new Random().nextInt(1000) + 500);
 
 		} catch (RuntimeException e) {
