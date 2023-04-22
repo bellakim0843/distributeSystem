@@ -99,7 +99,6 @@ public class checkServer extends userImplBase {
 			// Here, a stream of response is sent using the for loop.
 			responseObserver.onNext(deviceList.newBuilder().setVal(deviceArray[i]).build());
 		}
-		System.out.println("End");
 		responseObserver.onCompleted();
 	}
 

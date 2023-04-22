@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 //required grpc package for the client side
@@ -57,29 +58,46 @@ public class guiClient {
 
 		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50050).usePlaintext().build();
 
-		RegistrationClient.login();
+		//RegistrationClient.login();
 
 		try {
 			/* GUI */
 
 			JTextField id = new JTextField();
-
+			
 			JTextField name = new JTextField();
 
-			Object[] message = { "Employee ID:", id, "Employee Name:", name };
+			JPasswordField pw = new JPasswordField();
+
+			Object[] message = { "Employee ID:", id, "Employee Name:", name, "Password:", pw };
 
 			int option = JOptionPane.showConfirmDialog(null, message, "Login", JOptionPane.OK_CANCEL_OPTION);
+			
+			String idText = (id.getText());
+			System.out.println(idText);
+			String nameText = (name.getText());
+			System.out.println(nameText);
+			String pwText = new String(pw.getPassword());
+			System.out.println(pwText);
 
 			if (option == JOptionPane.OK_OPTION) {
-				String idText = (id.getText());
-				String nameText = name.getText();
+				if (!idText.equals(pwText)) {
+					JOptionPane.showMessageDialog(null, "Username and Password mismatch ");
+					System.exit(option);
+				}else if(idText.matches("[^\\d]")) {
+					JOptionPane.showMessageDialog(null, "Please input the numeric value in the employee ID!");
+					System.exit(option);
+				}
+				
 
-				loginRequest loginrequeset = loginRequest.newBuilder().setEmpNo(Integer.parseInt(idText))
-						.setEmpName(nameText).build();
+				
 
-				loginResponse reponse = loginResponse.newBuilder()
-						.setResponseMessage("Welcome! " + loginrequeset.getEmpName())
-						.setConfirm("EmpNo: " + loginrequeset.getEmpNo() + "\nLog-in Completed!").build();
+	
+				loginRequest req = loginRequest.newBuilder().setEmpNo(Integer.parseInt(idText)).setEmpName(nameText).build();
+
+				String information = "Welcome! "+req.getEmpName()+", EmpNo: "+req.getEmpNo();
+				
+				loginResponse reponse = loginResponse.newBuilder().setResponseMessage("Welcome! " + req.getEmpNo()).setConfirm(req.getEmpName()+"\nLog-in Completed!").build();
 
 				JOptionPane.showConfirmDialog(null, reponse.getResponseMessage() + "\n" + reponse.getConfirm());
 				System.out.println(reponse.getResponseMessage() + "\n" + reponse.getConfirm());
@@ -95,7 +113,7 @@ public class guiClient {
 				loginBar.setSize(400, 30);
 
 				JLabel loginLabel = new JLabel();
-				loginLabel.setText("Welcome! ID: " + idText + " Name: " + nameText);
+				loginLabel.setText("Welcome! empID: " + idText);
 				loginBar.add(loginLabel);
 				loginLabel.setFont(new Font("Verdana", Font.BOLD, 14));
 				frame.add(loginBar, BorderLayout.NORTH);
@@ -142,7 +160,7 @@ public class guiClient {
 
 				chatButton.addActionListener(e -> {
 
-					chatClient.realtimeChat();
+					chatClient.realtimeChat(nameText);
 
 				});
 

@@ -63,13 +63,13 @@ public class chatClient {
 
 		// bidirectional streaming
 
-		realtimeChat();
+		//realtimeChat();
 
 		// Closing the channel once message has been passed.
 
 	}
 
-	public static void realtimeChat() {
+	public static void realtimeChat(String str) {
 
 		clientJMDNS();
 
@@ -78,8 +78,8 @@ public class chatClient {
 		// stubs -- generate from proto
 		asyncStubChat = chatGrpc.newStub(channel);
 
-		Scanner sc = new Scanner(System.in);
-		String name = JOptionPane.showInputDialog("Please input your name.");
+		String name = str;
+				//JOptionPane.showInputDialog("Please input your name.");
 
 		JFrame chatFrame = new JFrame();
 

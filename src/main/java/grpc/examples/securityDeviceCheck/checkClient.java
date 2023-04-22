@@ -27,6 +27,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 
+
 //Client need not to extend any other class (GRPC related code) here
 public class checkClient {
 
@@ -73,23 +74,7 @@ public class checkClient {
 		int totalNumber = 0;
 		// First creating a request message. Here, the message contains a string in
 		// setVal
-		deviceRequest request = deviceRequest.newBuilder().setMassData(
-				"Device No: 1\nDevice Type: Security Camera\nDevice Code: AAA2020\nDevice Location: Warehouse-Front,"
-						+ "\nDevice No: 2\nDevice Type: Security Camera\nDevice Code: ACC2022\nDevice Location: Warehouse-Rear,"
-						+ "\nDevice No: 3\nDevice Type: Security Camera\nDevice Code: ABB2017\nDevice Location: Main entrance,"
-						+ "\nDevice No: 4\nDevice Type: Thermal Imaging Camera\nDevice Code: UPC2021\nDevice Location: Main entrance,"
-						+ "\nDevice No: 5\nDevice Type: Finger-Print Scanner \nDevice Code: FII2020\nDevice Location: Sub entrance,"
-						+ "\nDevice No: 6\nDevice Type: Security Camera\nDevice Code: RTT2018\nDevice Location: Lab, "
-						+ "\nDevice No: 7\nDevice Type: Card Scanner\nDevice Code: MSN3000\nDevice Location: Security Room,"
-						+ "\nDevice No: 8\nDevice Type: Thermal Imaging Camera\nDevice Code: SIP2023\nDevice Location: Security Device Cargo ,"
-						+ "\nDevice No: 9\nDevice Type: Finger-Print Scanner \nDevice Code: FII2020\nDevice Location: Rear entrance,"
-						+ "\nDevice No: 10\nDevice Type: Security Camera\nDevice Code: RTT2018\nDevice Location: Parking Lot, "
-						+ "\nDevice No: 11\nDevice Type: Remote Controller\nDevice Code: QTT2023\nDevice Location: Control tower,"
-						+ "\nDevice No: 12\nDevice Type: Security Camera\nDevice Code: SIP2022\nDevice Location: Cleaning room ,"
-						+ "\nDevice No: 13\nDevice Type: Security Camera \nDevice Code: ACC2016\nDevice Location: Meeting room,"
-						+ "\nDevice No: 14\nDevice Type: Security Camera\nDevice Code: OMM2019\nDevice Location: Lab, "
-						+ "\nDevice No: 15\nDevice Type: Iris recognition Controller\nDevice Code: EYE2023\nDevice Location: Executive room,")
-				.build();
+		deviceRequest request = deviceRequest.newBuilder().setMassData(dataSet()).build();
 
 		// as this call is blocking. The client will not proceed until all the messages
 		// in stream has been received.
@@ -152,6 +137,7 @@ public class checkClient {
 
 			deviceFrame.setVisible(true);
 
+	
 			// Client keeps a check on the next message in stream.
 			while (responses.hasNext()) {
 				deviceList temp = responses.next();
@@ -161,7 +147,7 @@ public class checkClient {
 			}
 
 			list.append("\nTotal " + totalNumber + " devices are in the company.");
-
+	
 			printButton.addActionListener(e -> {
 				printOut();
 				printer pp = new printer(deviceFrame);
@@ -171,7 +157,7 @@ public class checkClient {
 
 			closeButton.addActionListener(e -> {
 				deviceFrame.dispose();
-
+			
 			});
 
 		} catch (StatusRuntimeException e) {
@@ -247,12 +233,43 @@ public class checkClient {
 		} catch (StatusRuntimeException ex) {
 			// Print if any error/exception is generated.
 			System.out.println(ex.getMessage());
-
 		}
 
-		// System.out.println(response+"aaaaa");
 		channel.shutdown();
 
+	}
+	
+	public static String dataSet() {
+		
+		String data = 	"Device No: 1\nDevice Type: Security Camera\nDevice Code: AAA2020\nDevice Location: Warehouse-Front,"
+				+ "\nDevice No: 2\nDevice Type: Security Camera\nDevice Code: ACC2022\nDevice Location: Warehouse-Rear,"
+				+ "\nDevice No: 3\nDevice Type: Security Camera\nDevice Code: ABB2017\nDevice Location: Main entrance,"
+				+ "\nDevice No: 4\nDevice Type: Thermal Imaging Camera\nDevice Code: UPC2021\nDevice Location: Main entrance,"
+				+ "\nDevice No: 5\nDevice Type: Finger-Print Scanner \nDevice Code: FII2020\nDevice Location: Sub entrance,"
+				+ "\nDevice No: 6\nDevice Type: Security Camera\nDevice Code: RTT2018\nDevice Location: Lab, "
+				+ "\nDevice No: 7\nDevice Type: Card Scanner\nDevice Code: MSN3000\nDevice Location: Security Room,"
+				+ "\nDevice No: 8\nDevice Type: Thermal Imaging Camera\nDevice Code: SIP2023\nDevice Location: Security Device Cargo ,"
+				+ "\nDevice No: 9\nDevice Type: Finger-Print Scanner \nDevice Code: FII2020\nDevice Location: Rear entrance,"
+				+ "\nDevice No: 10\nDevice Type: Security Camera\nDevice Code: RTT2018\nDevice Location: Parking Lot, "
+				+ "\nDevice No: 11\nDevice Type: Remote Controller\nDevice Code: QTT2023\nDevice Location: Control tower,"
+				+ "\nDevice No: 12\nDevice Type: Security Camera\nDevice Code: SIP2022\nDevice Location: Cleaning room ,"
+				+ "\nDevice No: 13\nDevice Type: Security Camera \nDevice Code: ACC2016\nDevice Location: Meeting room,"
+				+ "\nDevice No: 14\nDevice Type: Security Camera\nDevice Code: OMM2019\nDevice Location: Lab, "
+				+ "\nDevice No: 15\nDevice Type: Iris recognition Controller\nDevice Code: EYE2023\nDevice Location: Executive room,"
+				+ "\nDevice No: 16\nDevice Type: Thermal Imaging Camera\nDevice Code: SIP2023\nDevice Location: Security Device Cargo ,"
+				+ "\nDevice No: 17\nDevice Type: Finger-Print Scanner \nDevice Code: FII2020\nDevice Location: Rear entrance,"
+				+ "\nDevice No: 18\nDevice Type: Security Camera\nDevice Code: RTT2018\nDevice Location: Parking Lot, "
+				+ "\nDevice No: 19\nDevice Type: Remote Controller\nDevice Code: QTT2023\nDevice Location: Control tower,"
+				+ "\nDevice No: 20\nDevice Type: Security Camera\nDevice Code: SIP2022\nDevice Location: Cleaning room ,"
+				+ "\nDevice No: 21\nDevice Type: Security Camera \nDevice Code: ACC2016\nDevice Location: Meeting room,"
+				+ "\nDevice No: 22\nDevice Type: Security Camera\nDevice Code: OMM2019\nDevice Location: Lab, "
+				+ "\nDevice No: 23\nDevice Type: Iris recognition Controller\nDevice Code: EYE2023\nDevice Location: Executive room,";
+		
+		
+		return data;
+		
+		
+		
 	}
 
 }
