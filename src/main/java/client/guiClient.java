@@ -3,7 +3,7 @@ package client;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-
+import java.io.IOException;
 import java.util.Random;
 
 import javax.swing.JButton;
@@ -124,14 +124,19 @@ public class guiClient {
 				/* If user clicks the button, each method will be called! */
 				registrationButton.addActionListener(e -> {
 
-					RegistrationClient.clientJMDNS();
+					//RegistrationClient.clientJMDNS();
 					RegistrationClient.login();
 					RegistrationClient.register();
 				});
 
 				deviceCheckButton.addActionListener(e -> {
 
-					checkClient.securityDeviceCheck();
+					try {
+						checkClient.securityDeviceCheck();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				});
 
 				chatButton.addActionListener(e -> {
@@ -143,6 +148,7 @@ public class guiClient {
 				logoutButton.addActionListener(e -> {
 
 					frame.dispose();
+					System.exit(0);
 				});
 
 			}

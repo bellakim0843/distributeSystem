@@ -7,7 +7,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -46,16 +47,17 @@ public class checkClient {
 
 	public static void main(String[] args) throws Exception {
 
-		// serverJMDNS();
+	//	 serverJMDNS();
 //		System.out.println(host);
 //		System.out.println(port);
 
 		securityDeviceCheck();
+		
 
 
 	}
 
-	public static void securityDeviceCheck() {
+	public static void securityDeviceCheck() throws IOException {
 
 		ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
 
@@ -101,7 +103,7 @@ public class checkClient {
 			namePanel1.add(workShift);
 
 			JTextArea list = new JTextArea();
-			list.setPreferredSize(new Dimension(400, 1500));
+			list.setPreferredSize(new Dimension(400, 2000));
 			list.setLineWrap(true);
 			list.setWrapStyleWord(true);
 			list.setEnabled(false);
@@ -139,8 +141,6 @@ public class checkClient {
 				list.append(temp.getVal() + "\n=============================");
 				totalNumber++;
 			}
-			/*Indicate total number of the devices */
-			list.append("\nTotal " + totalNumber + " devices are in the company.");
 
 			/*If users click the button, they can print out the list of the devices
 			 * I implemented with printer class in same package. */
@@ -155,11 +155,16 @@ public class checkClient {
 				deviceFrame.dispose();
 			});
 
-		} catch (StatusRuntimeException e) {
-			e.printStackTrace();
+		}catch (StatusRuntimeException e) {
+			System.err.println("RPC failed: " + e.getStatus());
+		} catch (Exception e) {
+			System.err.println("Error occurred: " + e.getMessage());
 		}
-
-		channel.shutdown();
+		finally {
+			if (channel != null) {
+				channel.shutdown();
+			}
+		}
 
 	}
 
@@ -187,10 +192,11 @@ public class checkClient {
 			// I succeded to get host value and port value from JMDNS
 			System.out.println("JmDNS is started!..");
 
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-
+		}catch (IOException e) {
+	        System.err.println("Error creating JmDNS instance: " + e.getMessage());
+	    } catch (NullPointerException e) {
+	        System.err.println("Error getting service information: " + e.getMessage());
+	    }
 	}
 
 	public static void printOut() {
@@ -219,15 +225,18 @@ public class checkClient {
 			System.out.println("Print Server " + response.toString());
 
 		} catch (StatusRuntimeException ex) {
-			// Print an error message if the RPC call fails.
-			System.out.println(ex.getMessage());
-		} catch (InterruptedException ex) {
-			// Print an error message if the thread is interrupted while sleeping.
-			System.out.println(ex.getMessage());
-		}
-
-		// Shutdown the channel when the RPC call is complete.
-		channel.shutdown();
+	        // Print an error message if the RPC call fails.
+	        System.err.println("RPC failed: " + ex.getStatus());
+	    } catch (InterruptedException ex) {
+	        // Print an error message if the thread is interrupted while sleeping.
+	        System.err.println("Thread interrupted while sleeping: " + ex.getMessage());
+	        Thread.currentThread().interrupt();
+	    } finally {
+	        // Shutdown the channel when the RPC call is complete.
+	        if (channel != null) {
+	            channel.shutdown();
+	        }
+	    }
 	}
 
 	public static String dataSet() {

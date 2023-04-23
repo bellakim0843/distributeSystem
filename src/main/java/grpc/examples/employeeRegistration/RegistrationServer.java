@@ -48,14 +48,14 @@ public class RegistrationServer extends userImplBase {
 			logger.info("Employee Registration Server started, listening on " + port);
 			Thread.sleep(20000);
 			server.awaitTermination();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			
-	
-		}
+		}catch (UnknownHostException e) {
+	        System.err.println("Unknown host: " + e.getMessage());
+	    } catch (IOException e) {
+	        System.err.println("Error detected in the server: " + e.getMessage());
+	    } catch (Exception e) {
+	        System.err.println("Error detected: " + e.getMessage());
+	        e.printStackTrace();
+	    }
 
 
 	}

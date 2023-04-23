@@ -39,12 +39,12 @@ public class chatServer extends chatImplBase {
 			Thread.sleep(20000);
 			server.awaitTermination();
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-
-		}
+	        System.err.println("Unknown host: " + e.getMessage());
+	    } catch (IOException e) {
+	        System.err.println("I/O exception occurred: " + e.getMessage());
+	    } catch (Exception e) {
+	        System.err.println("An exception occurred: " + e.getMessage());
+	    }
 
 	}
 
